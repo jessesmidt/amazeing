@@ -21,7 +21,7 @@ install:
 # Run the main script
 run:
 	@echo "Running Amazeing..."
-	$(PYTHON) $(MAIN_SCRIPT)
+	$(PYTHON) $(a_maze_ing.py) $(config.txt)
 
 # Run the main script in debug mode using pdb
 debug:
