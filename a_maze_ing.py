@@ -32,7 +32,7 @@ def main():
 	print("Config loaded successfully!")
 	print(config)
 
-#config is een dict (soort struct), gaan wij doorsturen naar algo functie
+#config is een dict (vergelijkbaar met struct), gaan wij doorsturen naar algo functie
 
 
 if __name__ == "__main__":
