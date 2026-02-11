@@ -1,10 +1,14 @@
 import random
+
+from digit_patterns import DIGITS
+from char_patterns import CHARS
+
 # maze input stats
 start = (1,1)
-goal = (8,5)
+goal = (14,13)
 
-width = 10
-height = 10
+width = 15
+height = 15
 
 
 # cardinal wall stats
@@ -13,15 +17,24 @@ S = 2
 E = 4
 W = 8
 
-MAX_CELL = N + W + S + E
+MAX_CELL = N + E + S + W
 
 
 # maze asci visuals
-WALL = "█"
-EMPTY = " "
+WALL = "██"
+EMPTY = "  "
+
+PATTERN_WALL = "▒▒"
+PATTERN_EMPTY = "░░"
+
+START_BLOCK = "\033[42m  \033[0m"
+GOAL_BLOCK = "\033[41m  \033[0m"
+
+
+
 
 # maze controls
-BIAS = 1      # 0 = roomy, 1 = long corridors
+BIAS = 0.5      # 0 = roomy, 1 = long corridors
 SEED = None       # set to none for full-random
 
 # maze helper lists
@@ -39,7 +52,10 @@ OPPOSITE = {
     'W': 'E'
 }
 
+# pick any number or letter combination to place in the middle of the maze
+PATTERN = "69"
 
+# the cell type shit
 class Cell:
     def __init__(self, x, y):
         # this cell has these x & y coords
@@ -70,9 +86,13 @@ class Cell:
         self.is_start = False
         self.is_goal = False
 
-        # is it part of the 42 symbol in the middle
-        self.fortytwo = False
+        # is it part of the pattern in the middle
+        self.pattern = False
 
+
+
+
+# makes the grid type shit
 def make_grid(width, height):
     grid = []
 
@@ -83,6 +103,112 @@ def make_grid(width, height):
         grid.append(row)
 
     return grid
+
+##########################################
+#       42 Reasons to stay
+##########################################
+
+def make_pattern(pattern_value):
+    # if there aint no pattern, there aint no pattern
+    if pattern_value is None:
+        return None
+
+    # convert the input to a string
+    s = str(pattern_value).lower()
+
+    # if there is only 1 input
+    if len(s) == 1:
+        s = "0" + s
+
+    # if it doesnt have 2 chars (more then 2), no pattern
+    if len(s) != 2:
+        return None
+    
+    # first char is left, second char is right
+    left = s[0]
+    right = s[1]
+
+    # check if the left is in digits or chars or neither
+    if left in DIGITS:
+        left = DIGITS[left]
+    elif left in CHARS:
+        left = CHARS[left]
+    else:
+        return None
+
+    # check if right is in digits or chars or neither
+    if right in DIGITS:
+        right = DIGITS[right]
+    elif right in CHARS:
+        right = CHARS[right]
+    else:
+        return None
+
+    # make the patern
+    # first append the row of left-digit
+    # then add a 0, empty
+    # then append the row if the right-digit
+    pattern = []
+    for row in range(len(left)):
+        pattern.append(left[row] + [0] + right[row])  # add a gap column
+
+    return pattern
+
+def mark_pattern(grid, pattern):
+
+    # get the height & width of the grid
+    # get the height & width of the pattern
+    h = len(grid)
+    w = len(grid[0])
+    ph = len(pattern)
+    pw = len(pattern[0])
+
+    # there needs to be atleast 2 normal-maze-cells
+    # around the pattern, or its jut not gonna do
+    # the pattern
+    if (h + 2) <  ph or (w + 2) < pw:
+        return
+    
+    # looks for the coords 
+    start_x = (w - pw) // 2 
+    start_y = (h - ph) // 2
+    
+    for py in range(ph):
+        for px in range(pw):
+            if pattern[py][px] == 1:
+                grid_x = start_x + px
+                grid_y = start_y + py
+
+                cell = grid[grid_y][grid_x]
+
+                cell.walls = {
+                'N': True,
+                'E': True,
+                'S': True,
+                'W': True
+                }
+
+                cell.visited = True
+                cell.pattern = True
+
+    
+    
+##########################################
+#       The way in & out
+##########################################
+
+def mark_start_and_exit(grid, start, goal):
+    h = len(grid)
+    w = len(grid[0])
+
+    sx, sy = start
+    gx, gy = goal
+
+    start_cell = grid[sy][sx]
+    goal_cell = grid[gy][gx]
+    
+    start_cell.is_start = True
+    goal_cell.is_goal = True
 
 ##########################################
 #       Help The Maze
@@ -116,27 +242,32 @@ def get_unvisited_neighbors(grid, cell):
     x = cell.x
     y = cell.y
 
-    # check we arent at the top edge
-    # check if the cell above (y-1) is not visited
-    if y > 0 and not grid[y-1][x].visited:
-        neighbors.append(grid[y-1][x])
+    # Up
+    if y > 0:
+        neighbor = grid[y-1][x]
+        if not neighbor.visited and not neighbor.pattern:
+            neighbors.append(neighbor)
 
-    # check we arent at the bottom edge
-    # check if the cell below (y+1) is not visited
-    if y < h-1 and not grid[y+1][x].visited:
-        neighbors.append(grid[y+1][x])
+    # Down
+    if y < h-1:
+        neighbor = grid[y+1][x]
+        if not neighbor.visited and not neighbor.pattern:
+            neighbors.append(neighbor)
 
-    # check we arent at the left edge
-    # check if the cell left (x-1) is not visited
-    if x > 0 and not grid[y][x-1].visited:
-        neighbors.append(grid[y][x-1])
+    # Left
+    if x > 0:
+        neighbor = grid[y][x-1]
+        if not neighbor.visited and not neighbor.pattern:
+            neighbors.append(neighbor)
 
-    # check we arent at the right edge
-    # check if the cell right (x+1) is not visited
-    if x < w-1 and not grid[y][x+1].visited:
-        neighbors.append(grid[y][x+1])
+    # Right
+    if x < w-1:
+        neighbor = grid[y][x+1]
+        if not neighbor.visited and not neighbor.pattern:
+            neighbors.append(neighbor)
 
     return neighbors
+
 
 def random_start(grid):
     return grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
@@ -151,8 +282,14 @@ def sigma_male_random_maze_generator(grid, bias=BIAS, seed=SEED):
     if seed is not None:
         random.seed(seed)
 
-    # find a random cell to start at yk
-    start = grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
+    # mark all the cells with a pattern
+    mark_pattern(grid, pattern)
+
+    # find a random cell to start at yk that isnt in the patern
+    while True:
+        start = grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
+        if not start.pattern:
+            break
     start.visited = True
     
     # list of cells we are currently growing from
@@ -202,40 +339,64 @@ def print_maze(grid):
         # ── TOP (north walls)
         for x in range(w):
             cell = grid[y][x]
-            print(WALL * 2, end="")
+
+            wall_char = PATTERN_WALL if cell.pattern else WALL
+            empty_char = PATTERN_EMPTY if cell.pattern else EMPTY
+
+            print(wall_char, end="")
+
             if cell.walls['N']:
-                print(WALL * 2, end="")
+                print(wall_char, end="")
             else:
-                print(EMPTY * 2, end="")
-            print(WALL * 2, end="")
+                print(empty_char, end="")
+
+            print(wall_char, end="")
         print()
 
         # ── MIDDLE (west + interior + east)
         for x in range(w):
             cell = grid[y][x]
-            if cell.walls['W']:
-                print(WALL * 2, end="")
-            else:
-                print(EMPTY * 2, end="")
 
-            print(EMPTY * 2, end="")
+            wall_char = PATTERN_WALL if cell.pattern else WALL
+            empty_char = PATTERN_EMPTY if cell.pattern else EMPTY
+
+            if cell.walls['W']:
+                print(wall_char, end="")
+            else:
+                print(empty_char, end="")
+
+            if cell.is_start:
+                content = START_BLOCK
+            elif cell.is_goal:
+                content = GOAL_BLOCK
+            else:
+                content = empty_char
+
+            print(content, end="")
 
             if cell.walls['E']:
-                print(WALL * 2, end="")
+                print(wall_char, end="")
             else:
-                print(EMPTY * 2, end="")
+                print(empty_char, end="")
         print()
 
         # ── BOTTOM (south walls)
         for x in range(w):
             cell = grid[y][x]
-            print(WALL * 2, end="")
+
+            wall_char = PATTERN_WALL if cell.pattern else WALL
+            empty_char = PATTERN_EMPTY if cell.pattern else EMPTY
+
+            print(wall_char, end="")
+
             if cell.walls['S']:
-                print(WALL * 2, end="")
+                print(wall_char, end="")
             else:
-                print(EMPTY * 2, end="")
-            print(WALL * 2, end="")
+                print(empty_char, end="")
+
+            print(wall_char, end="")
         print()
+
 
 
 
@@ -246,8 +407,11 @@ def print_maze(grid):
 ##########################################
 
 grid = make_grid(width, height)
+pattern = make_pattern(PATTERN)
+mark_start_and_exit(grid, start, goal)
 
 sigma_male_random_maze_generator(grid)
+
 
 print_maze(grid)
 
