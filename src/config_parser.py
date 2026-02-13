@@ -86,6 +86,11 @@ def parse_config(filename: str) -> dict:
             config['PATTERN'] = pattern
 
         if 'RENDER' in config:
+            render = str(config['RENDER'])
+
+            if render != "MLX" and render != "ASCII":
+                raise ValueError("RENDER must be either MLX or ASCII")
+
             config['RENDER'] = str(config['RENDER'])
 
     except (ValueError, IndexError) as e:

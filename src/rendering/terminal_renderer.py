@@ -12,7 +12,7 @@ PATTERN_EMPTY = "░░"
 START_BLOCK = "\033[42m  \033[0m"
 GOAL_BLOCK = "\033[41m  \033[0m"
 
-def print_maze(grid):
+def print_maze_ascii(grid):
     h = len(grid)
     w = len(grid[0])
 

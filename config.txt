@@ -26,5 +26,5 @@ BIAS=0.5
 # [OPTIONAL] Seed for recreatability of mazes. Only integer input allowed
 #SEED=42
 
-# [OPTIONAL] Rendering options are 2D (Using MiniLibX), ASCII (terminal output) ASCII_C
-RENDER=2D
+# [OPTIONAL] Rendering options are MLX (Default, Using MiniLibX), ASCII (terminal output)
+RENDER=MLX
