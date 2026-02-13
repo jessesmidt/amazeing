@@ -1,9 +1,9 @@
 
 # [REQUIRED] Total width of maze
-WIDTH=15
+WIDTH=150
 
 # [REQUIRED] Total height of maze
-HEIGHT=15
+HEIGHT=150
 
 # [REQUIRED] Entry point for maze (between 0 and height-1)
 ENTRY=3,2
@@ -18,13 +18,13 @@ OUTPUT_FILE=maze.txt
 PERFECT=True
 
 # [REQUIRED] Pattern will be the number / combination of 2 characters in the middle of the maze
-PATTERN=8p
+PATTERN=00
 
 # [OPTIONAL] Choose num between 0 and 1 to choose between PRIM (0) and DFS (1) generation algorithms
 BIAS=0.5
 
 # [OPTIONAL] Seed for recreatability of mazes. Only integer input allowed
-#SEED=42
+SEED=42
 
 # [OPTIONAL] Rendering options are MLX (Default, Using MiniLibX), ASCII (terminal output)
 RENDER=ASCII
