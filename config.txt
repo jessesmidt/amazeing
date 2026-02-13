@@ -1,6 +1,30 @@
-WIDTH=20
-HEIGHT=15
-ENTRY=19,14
-EXIT=19,4
+
+# [REQUIRED] Total width of maze
+WIDTH=32
+
+# [REQUIRED] Total height of maze
+HEIGHT=14
+
+# [REQUIRED] Entry point for maze (between 0 and height-1)
+ENTRY=13,5
+
+# [REQUIRED] Exit point for maze (between 0 and width-1)
+EXIT=13,7
+
+# [REQUIRED] Name for ouput file of maze in hexadecimal digits
 OUTPUT_FILE=maze.txt
+
+# [REQUIRED] True / False for perfect maze (only a single possible path)
 PERFECT=True
+
+# [REQUIRED] Pattern will be the number / combination of 2 characters in the middle of the maze
+PATTERN=hi
+
+# [OPTIONAL] Choose num between 0 and 1 to choose between PRIM (0) and DFS (1) generation algorithms
+BIAS=0.5
+
+# [OPTIONAL] Seed for recreatability of mazes. Only integer input allowed
+#SEED=42
+
+# [OPTIONAL] Rendering options are 2D (Using MiniLibX), ASCII (terminal output) ASCII_C
+RENDER=2D
