@@ -27,4 +27,4 @@ BIAS=0.5
 #SEED=42
 
 # [OPTIONAL] Rendering options are MLX (Default, Using MiniLibX), ASCII (terminal output)
-RENDER=MLX
+RENDER=ASCII
