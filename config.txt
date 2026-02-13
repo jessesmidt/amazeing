@@ -1,6 +1,6 @@
 
 # [REQUIRED] Total width of maze
-WIDTH=32
+WIDTH=14
 
 # [REQUIRED] Total height of maze
 HEIGHT=14

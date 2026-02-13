@@ -1,7 +1,7 @@
 import sys
-from .config_parser import parse_config
-from .maze.generator import generate_maze
-from .rendering.terminal_renderer import print_maze
+from src.config_parser import parse_config
+from src.maze.generator import generate_maze
+from src.rendering.terminal_renderer import print_maze
 
 # # You will implement a maze generator in Python that takes a configuration file, generates a
 # # maze, eventually perfect (with a single path between entrance and exit), and writes it to a

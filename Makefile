@@ -1,11 +1,10 @@
-# Makefile for Amazeing Python Project
+# Makefile for A-Maze-ing Python Project
 
 # Variables
 PYTHON := python3
 PIP := pip3
-MAIN_SCRIPT := Amazeing.py
-# Alternative if you create a separate main.py:
-# MAIN_SCRIPT := main.py
+MAIN_SCRIPT := a_maze_ing.py
+CONFIG_FILE := config.txt
 
 # Phony targets (targets that don't represent files)
 .PHONY: install run debug clean lint lint-strict help
@@ -20,13 +19,13 @@ install:
 
 # Run the main script
 run:
-	@echo "Running Amazeing..."
-	$(PYTHON) $(a_maze_ing.py) $(config.txt)
+	@echo "Running A-Maze-ing..."
+	$(PYTHON) $(MAIN_SCRIPT) $(CONFIG_FILE)
 
 # Run the main script in debug mode using pdb
 debug:
-	@echo "Running Amazeing in debug mode..."
-	$(PYTHON) -m pdb $(MAIN_SCRIPT)
+	@echo "Running A-Maze-ing in debug mode..."
+	$(PYTHON) -m pdb $(MAIN_SCRIPT) $(CONFIG_FILE)
 
 # Clean temporary files and caches
 clean:
@@ -57,10 +56,10 @@ lint-strict:
 
 # Display help information
 help:
-	@echo "Amazeing Project - Available Make targets:"
+	@echo "A-Maze-ing Project - Available Make targets:"
 	@echo ""
 	@echo "  make install      - Install project dependencies"
-	@echo "  make run          - Execute the main script"
+	@echo "  make run          - Execute the main script with default config"
 	@echo "  make debug        - Run the main script in debug mode (pdb)"
 	@echo "  make clean        - Remove temporary files and caches"
 	@echo "  make lint         - Run flake8 and mypy with required flags"
