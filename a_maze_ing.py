@@ -1,8 +1,13 @@
 import sys
 from src.config_parser import parse_config
 from src.maze.generator import generate_maze
+<<<<<<< HEAD
 from src.rendering.terminal_renderer import print_maze_ascii
 from src.rendering.mlx_renderer import print_maze_mlx
+=======
+from src.maze.maze_solver import solve_maze
+from src.rendering.terminal_renderer import print_maze
+>>>>>>> 52cb688 (kleine merge)
 
 # # You will implement a maze generator in Python that takes a configuration file, generates a
 # # maze, eventually perfect (with a single path between entrance and exit), and writes it to a
@@ -37,10 +42,16 @@ def main():
 
     grid = generate_maze(config)
 
+<<<<<<< HEAD
     if config['RENDER'] == 'MLX':
         print_maze_mlx(grid)
     else:
         print_maze_ascii(grid)
+=======
+    solve_maze(grid)
+
+    print_maze(grid)
+>>>>>>> 52cb688 (kleine merge)
 
 #config is een dict (vergelijkbaar met struct), gaan wij doorsturen naar algo functie
 

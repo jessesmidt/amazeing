@@ -11,6 +11,9 @@ PATTERN_EMPTY = "░░"
 
 START_BLOCK = "\033[42m  \033[0m"
 GOAL_BLOCK = "\033[41m  \033[0m"
+PATH_BLOCK = "\033[44m  \033[0m"
+
+
 
 def print_maze_ascii(grid):
     h = len(grid)
@@ -22,60 +25,116 @@ def print_maze_ascii(grid):
         for x in range(w):
             cell = grid[y][x]
 
-            wall_char = PATTERN_WALL if cell.pattern else WALL
-            empty_char = PATTERN_EMPTY if cell.pattern else EMPTY
-
-            print(wall_char, end="")
-
-            if cell.walls['N']:
-                print(wall_char, end="")
+            # NW corner
+            if cell.pattern:
+                print(PATTERN_WALL, end="")
             else:
-                print(empty_char, end="")
+                print(WALL, end="")
 
-            print(wall_char, end="")
+            # north corridor
+            if cell.walls["N"]:
+                if cell.pattern:
+                    print(PATTERN_WALL, end="")
+                else:
+                    print(WALL, end="")
+            else:
+                # no wall: check if both cells are in the path
+                if y > 0 and cell.in_path and grid[y-1][x].in_path:
+                    print(PATH_BLOCK, end="")
+                else:
+                    if cell.pattern:
+                        print(PATTERN_EMPTY, end="")
+                    else:
+                        print(EMPTY, end="")
+
+            # NE corner
+            if cell.pattern:
+                print(PATTERN_WALL, end="")
+            else:
+                print(WALL, end="")
+
         print()
 
         # ── MIDDLE (west + interior + east)
         for x in range(w):
             cell = grid[y][x]
 
-            wall_char = PATTERN_WALL if cell.pattern else WALL
-            empty_char = PATTERN_EMPTY if cell.pattern else EMPTY
-
-            if cell.walls['W']:
-                print(wall_char, end="")
+            # west corridor
+            if cell.walls["W"]:
+                if cell.pattern:
+                    print(PATTERN_WALL, end="")
+                else:
+                    print(WALL, end="")
             else:
-                print(empty_char, end="")
+                if x > 0 and cell.in_path and grid[y][x-1].in_path:
+                    print(PATH_BLOCK, end="")
+                else:
+                    if cell.pattern:
+                        print(PATTERN_EMPTY, end="")
+                    else:
+                        print(EMPTY, end="")
 
+            # center content
             if cell.is_start:
-                content = START_BLOCK
+                print(START_BLOCK, end="")
             elif cell.is_goal:
-                content = GOAL_BLOCK
+                print(GOAL_BLOCK, end="")
+            elif cell.in_path:
+                print(PATH_BLOCK, end="")
             else:
-                content = empty_char
+                if cell.pattern:
+                    print(PATTERN_EMPTY, end="")
+                else:
+                    print(EMPTY, end="")
 
-            print(content, end="")
-
-            if cell.walls['E']:
-                print(wall_char, end="")
+            # east corridor
+            if cell.walls["E"]:
+                if cell.pattern:
+                    print(PATTERN_WALL, end="")
+                else:
+                    print(WALL, end="")
             else:
-                print(empty_char, end="")
+                if x < w - 1 and cell.in_path and grid[y][x+1].in_path:
+                    print(PATH_BLOCK, end="")
+                else:
+                    if cell.pattern:
+                        print(PATTERN_EMPTY, end="")
+                    else:
+                        print(EMPTY, end="")
+
         print()
 
         # ── BOTTOM (south walls)
         for x in range(w):
             cell = grid[y][x]
 
-            wall_char = PATTERN_WALL if cell.pattern else WALL
-            empty_char = PATTERN_EMPTY if cell.pattern else EMPTY
-
-            print(wall_char, end="")
-
-            if cell.walls['S']:
-                print(wall_char, end="")
+            # SW corner
+            if cell.pattern:
+                print(PATTERN_WALL, end="")
             else:
-                print(empty_char, end="")
+                print(WALL, end="")
 
-            print(wall_char, end="")
+            # south corridor
+            if cell.walls["S"]:
+                if cell.pattern:
+                    print(PATTERN_WALL, end="")
+                else:
+                    print(WALL, end="")
+            else:
+                if y < h - 1 and cell.in_path and grid[y+1][x].in_path:
+                    print(PATH_BLOCK, end="")
+                else:
+                    if cell.pattern:
+                        print(PATTERN_EMPTY, end="")
+                    else:
+                        print(EMPTY, end="")
+
+            # SE corner
+            if cell.pattern:
+                print(PATTERN_WALL, end="")
+            else:
+                print(WALL, end="")
+
         print()
+
 

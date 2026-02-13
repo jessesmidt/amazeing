@@ -1,15 +1,15 @@
 
 # [REQUIRED] Total width of maze
-WIDTH=14
+WIDTH=15
 
 # [REQUIRED] Total height of maze
-HEIGHT=14
+HEIGHT=15
 
 # [REQUIRED] Entry point for maze (between 0 and height-1)
-ENTRY=13,5
+ENTRY=3,2
 
 # [REQUIRED] Exit point for maze (between 0 and width-1)
-EXIT=13,7
+EXIT=12,13
 
 # [REQUIRED] Name for ouput file of maze in hexadecimal digits
 OUTPUT_FILE=maze.txt

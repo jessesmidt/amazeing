@@ -61,8 +61,6 @@ h(n) = esitmated distance to finish
 	
 """
 
-width = 8
-height = 8
 
 
 ##########
@@ -125,44 +123,13 @@ import heapq
 
 
 
-start = (1,1)
-goal = (8,5)
-
-
-# This makes the class 'Cell'
-# It storest this info
-# coords (x, y)
-# if it has a wall in a direction(true)
-# or not (false || air)#
-class Cell:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-        self.walls = {
-            'N': True,
-            'S': True,
-            'E': True,
-            'W': True
-        }
-
-        self.g = float('inf')
-        self.mhd = 0
-        self.f = float('inf')
-        
-        self.parent = None
-        self.in_path = False
-
-        self.is_start = False
-        self.is_goal = False
-
-
 # define manhattan function
 # manhattan function returns the distance
 # from current to goal (absolute distance)
 # (current_x - goal_x) + (current_y - goal_y)#
-def manhattan(cell, goal):
-	return abs(cell[0] - goal[0]) + abs(cell[1] -  goal[1])
+def manhattan(a, b):
+    return abs(a.x - b.x) + abs(a.y - b.y)
+
 
 
 
@@ -221,7 +188,19 @@ def reconstruct_path(goal):
 # open_set.remove(current) & closed_set.add(current)
 #   remove it from the ones we havent explored yet
 #   add it to the ones that we have already explored type xi#
-def solve_maze(start, goal, maze):
+def solve_maze(grid):
+    start = None
+    goal = None
+
+    for row in grid:
+        for cell in row:
+            if cell.is_start:
+                start = cell
+            if cell.is_goal:
+                goal = cell
+
+    start.in_path = True
+
     open_set = []
     closed_set = set()
 
@@ -241,7 +220,7 @@ def solve_maze(start, goal, maze):
         open_set.remove(current)
         closed_set.add(current)
         
-        for neighbor in get_neighbors(current, maze):
+        for neighbor in get_neighbors(current, grid):
             if neighbor in closed_set:
                 continue
 
