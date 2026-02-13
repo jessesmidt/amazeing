@@ -1,4 +1,4 @@
-import sys
+import os
 from typing import Dict, Tuple
 from pathlib import Path
 
@@ -13,6 +13,9 @@ def parse_config(filename: str) -> dict:
     config = {}
     required_keys = {'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'OUTPUT_FILE', 'PERFECT'}
     optional_keys = {'SEED', 'BIAS', 'PATTERN', 'RENDER'}
+
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"Configuration file '{filename}' not found.")
 
     with open(filename, 'r') as file:
         for line in file:
@@ -66,7 +69,6 @@ def parse_config(filename: str) -> dict:
         config['PERFECT'] = config['PERFECT'].lower() in ('true', '1', 'yes')
 
         # Optional conversions
-
         if 'SEED' in config:
             config['SEED'] = int(config['SEED'])
 
