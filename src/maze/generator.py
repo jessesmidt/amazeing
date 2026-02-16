@@ -16,7 +16,6 @@ OPPOSITE = {
     'W': 'E'
 }
 
-# the cell type shit
 class Cell:
     def __init__(self, x, y) -> None:
         # this cell has these x & y coords
@@ -51,9 +50,6 @@ class Cell:
         self.pattern = False
 
 
-
-
-# makes the grid type shit
 def make_grid(width, height) -> list[list[Cell]]:
     grid = []
 
@@ -238,8 +234,6 @@ def random_start(grid):
 ##########################################
 
 def sigma_male_random_maze_generator(grid, bias, seed, pattern) -> None:
-
-    # if the seed has not been made yet,
     if seed is not None:
         random.seed(seed)
 

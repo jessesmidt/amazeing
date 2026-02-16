@@ -1,21 +1,28 @@
-# Makefile for A-Maze-ing Python Project
-
-# Variables
-PYTHON := python3
-PIP := pip3
+VENV = venv
+PYTHON := $(VENV)/bin/python3
+PIP := $(VENV)/bin/pip
 MAIN_SCRIPT := a_maze_ing.py
 CONFIG_FILE := config.txt
 
+
 # Phony targets (targets that don't represent files)
-.PHONY: install run debug clean lint lint-strict help
+.PHONY: venv install run debug clean lint lint-strict help
 
 # Default target
 .DEFAULT_GOAL := help
 
+# Create virtual environment
+venv:
+	python3 -m venv $(VENV)
+	@echo "Virtual environment created!"
+
 # Install project dependencies
-install:
+install: venv
 	@echo "Installing project dependencies..."
+	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
+	$(PIP) install mlx-2.2-py3-none-any.whl
+	@echo "Dependencies installed!"
 
 # Run the main script
 run:
@@ -30,6 +37,7 @@ debug:
 # Clean temporary files and caches
 clean:
 	@echo "Cleaning temporary files and caches..."
+	@if [ -d "venv" ]; then rm -rf venv && echo "Removed venv/"; fi
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true

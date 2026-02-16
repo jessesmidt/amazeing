@@ -12,7 +12,7 @@ def parse_config(filename: str) -> dict:
     """
     config = {}
     required_keys = {'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'OUTPUT_FILE', 'PERFECT'}
-    optional_keys = {'SEED', 'BIAS', 'PATTERN', 'RENDER'}
+    # optional_keys = {'SEED', 'BIAS', 'PATTERN', 'RENDER'}
 
     if not os.path.exists(filename):
         raise FileNotFoundError(f"Configuration file '{filename}' not found.")

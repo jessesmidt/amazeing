@@ -151,7 +151,7 @@ def get_neighbors(cell, maze):
 
 def reconstruct_path(goal):
      current = goal
-     while current.parent:
+     while current:
           current.in_path = True
           current = current.parent
 
@@ -199,7 +199,13 @@ def solve_maze(grid):
             if cell.is_goal:
                 goal = cell
 
-    start.in_path = True
+    # Reset any previous path
+    for row in grid:
+        for cell in row:
+            cell.in_path = False
+            cell.g = float('inf')
+            cell.f = float('inf')
+            cell.parent = None
 
     open_set = []
     closed_set = set()
@@ -215,7 +221,8 @@ def solve_maze(grid):
         current = min(open_set, key=lambda c: c.f)
         
         if current == goal:
-            return reconstruct_path(goal)
+            reconstruct_path(goal)
+            return
 
         open_set.remove(current)
         closed_set.add(current)
