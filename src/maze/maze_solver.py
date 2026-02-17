@@ -1,50 +1,5 @@
 
 """
-
-	Heuristic Search Psuedo-code
-
-
-function A_STAR(start, goal, maze):
-- location of start
-- location of goal
-- and the maze generated ofcourse
-
-
-
-    open_set = priority queue
-    open_set.push(start, priority = h(start))
-
-	
-
-    came_from = empty map
-
-    g_score[start] = 0
-
-    while open_set is not empty:
-
-        current = open_set.pop_lowest_priority()
-
-        if current == goal:
-            return RECONSTRUCT_PATH(came_from, current)
-
-        for each neighbor of current:
-            if neighbor is a wall:
-                continue
-
-            tentative_g = g_score[current] + 1
-
-            if neighbor not in g_score
-               OR tentative_g < g_score[neighbor]:
-
-                came_from[neighbor] = current
-                g_score[neighbor] = tentative_g
-                f_score = tentative_g + h(neighbor)
-
-                open_set.push(neighbor, priority = f_score)
-
-    return FAILURE
-
-	
 HEURISTIC SEARCH
 
 f(n) = g(n) + h(n)
@@ -56,25 +11,9 @@ g(n) = cost from start to current node
 		
 h(n) = esitmated distance to finish
         - something like manhatten works well for this or something
-
-
-	
 """
 
-
-
-##########
-#   #    #    
-# # # ## #
-# #    # #
-# #### # #
-#        #
-##########
-
-
-
-
-# define the function print_maze
+# print_maze
 # parameters (maze, entry exit)
 # 	-> 	when calling funciton we require these 3
 # 	- 	maze (assortment of 1's and 0's in a grid)
@@ -98,32 +37,8 @@ h(n) = esitmated distance to finish
 # 	else do ' ' 
 # then print the line we just made yk
 # and do y++
-
-
-# def print_maze(maze, start, goal):
-# 	for y, row in enumerate(maze):
-# 		line = ""
-# 		for x, cell in enumerate(row):
-# 			if start == (x,y):
-# 				line += 'S'
-# 			elif goal == (x,y):
-# 				line += 'G'
-# 			else:
-# 				line += '#' if cell == 1 else ' '
-# 		print(line)
-
-# print_maze(maze, start, goal)
-
-
 import heapq
 
-
-
-
-
-
-
-# define manhattan function
 # manhattan function returns the distance
 # from current to goal (absolute distance)
 # (current_x - goal_x) + (current_y - goal_y)#
@@ -131,11 +46,8 @@ def manhattan(a, b):
     return abs(a.x - b.x) + abs(a.y - b.y)
 
 
-
-
 def get_neighbors(cell, maze):
     neighbors = []
-
     x, y = cell.x, cell.y
 
     if not cell.walls['N']:
@@ -149,12 +61,18 @@ def get_neighbors(cell, maze):
 
     return neighbors
 
-def reconstruct_path(goal):
-     current = goal
-     while current:
-          current.in_path = True
-          current = current.parent
 
+def reconstruct_path(goal) -> None:
+    """
+    Goes over the path, starting at goal.
+    Finding parent until they reach start.
+    Start has no parent so current will be set
+    to None.
+    """
+    current = goal
+    while current:
+        current.in_path = True
+        current = current.parent
 
 # define the function solve_maze
 # needs this info:
@@ -188,7 +106,18 @@ def reconstruct_path(goal):
 # open_set.remove(current) & closed_set.add(current)
 #   remove it from the ones we havent explored yet
 #   add it to the ones that we have already explored type xi#
-def solve_maze(grid):
+def solve_maze(grid) -> None:
+    """
+    Uses A* pathfinding to solve the maze. 
+
+    Finds the shortest possible path from the start to
+    the goal cell by using Manhattan distance heuristic.
+
+    Modifies the cells by setting their parent and path.
+
+    Args:
+        grid: A 2D list of Cell objects representing the maze structure.
+    """
     start = None
     goal = None
 
@@ -217,7 +146,7 @@ def solve_maze(grid):
     open_set.append(start)
 
     while open_set:
-            #look for the cell with the lowest f
+        #look for the cell with the lowest f
         current = min(open_set, key=lambda c: c.f)
         
         if current == goal:
@@ -241,4 +170,3 @@ def solve_maze(grid):
             neighbor.g = tentative_g
             neighbor.mhd = manhattan(neighbor, goal)
             neighbor.f = neighbor.g + neighbor.mhd
-

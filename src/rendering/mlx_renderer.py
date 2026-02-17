@@ -50,8 +50,9 @@ class MLXDisplay():
         """Properly close the window and exit"""
         # Destroy window
         self.mlx.mlx_destroy_window(self.mlx_ptr, self.win_ptr)
-        # Exit cleanly
-        sys.exit(0)
+        self.win = None
+        self.mlx = None
+
 
     def load_tiles(self):
         """Load all tile png's"""
