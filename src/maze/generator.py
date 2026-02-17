@@ -35,6 +35,8 @@ class Cell:
         self.visited = False
 
         # important for heuristic search algo
+        # g = cost, mhd = estimated cost using city block
+        # f combined g + mhd score. decides what cell is next
         self.g = float('inf')
         self.mhd = 0
         self.f = float('inf')
@@ -194,7 +196,7 @@ def remove_wall_between(a, b) -> None:
     b.walls[OPPOSITE[direction]] = False
 
 
-def get_unvisited_neighbors(grid, cell):
+def get_unvisited_neighbors(grid, cell) -> list:
     neighbors = []
     h = len(grid)
     w = len(grid[0])
@@ -299,7 +301,7 @@ def sigma_male_random_maze_generator(grid, bias, seed, pattern) -> None:
         if not start.pattern:
             break
     start.visited = True
-    
+
     # list of cells we are currently growing from
     # first one would be start ofc
     active = [start]
@@ -494,7 +496,6 @@ def generate_maze(config: dict) -> list[list[int]]:
     seed = config.get('SEED', None)
     bias = config.get('BIAS', 0.5)
     pattern = config.get('PATTERN', '42')
-    render = config.get('RENDER', '2D')
 
     grid = make_grid(width, height)
 
@@ -507,7 +508,7 @@ def generate_maze(config: dict) -> list[list[int]]:
     else:
         print(
             f"Warning: Could not create pattern '{pattern}', "
-            "width and height nog sufficient, minimum = 9x7"
+            "width and height not sufficient, minimum = 9x7"
             )
 
     mark_start_and_exit(grid, start, goal)

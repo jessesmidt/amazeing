@@ -181,7 +181,7 @@ def reconstruct_path(goal):
 #   idk wtf is happening here ngl
 # 
 # if current == goal
-#   cheack if the goal is reached type xi
+#   check if the goal is reached type xi
 #   cuz then we gotta go back and reconstruct
 #   the path using the parent-chain-shit
 # 

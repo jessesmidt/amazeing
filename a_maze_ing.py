@@ -1,6 +1,7 @@
 import sys
 from src.config_parser import parse_config
 from src.maze.generator import generate_maze
+from src.maze.print_output import print_output
 from src.maze.maze_solver import solve_maze
 from src.rendering.terminal_renderer import print_maze_ascii
 from src.rendering.mlx_renderer import print_maze_mlx
@@ -19,12 +20,9 @@ def main():
     except ValueError as e:
         print(f"Error: {e}")
         return
-
-    print("Config loaded successfully!")
-    print(config)
+    print(f"Config loaded successfully!\n{config}")
 
     grid = generate_maze(config)
-
     solve_maze(grid)
 
     if config['RENDER'] == 'MLX':
@@ -32,6 +30,9 @@ def main():
     else:
         print_maze_ascii(grid)
 
+    print_output(grid)
+
+    
 
 if __name__ == "__main__":
 	main()
