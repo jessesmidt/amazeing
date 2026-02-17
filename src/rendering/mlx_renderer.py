@@ -208,9 +208,9 @@ def cell_to_tile_index(cell) -> int:
     value = 0
     if cell.walls['N']:
         value |= 1  # N = 1
-    if cell.walls['S']:
-        value |= 2  # S = 2
     if cell.walls['E']:
+        value |= 2  # S = 2
+    if cell.walls['S']:
         value |= 4  # E = 4
     if cell.walls['W']:
         value |= 8  # W = 8
