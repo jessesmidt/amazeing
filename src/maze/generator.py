@@ -66,7 +66,6 @@ def make_grid(width, height) -> list[list[Cell]]:
 ##########################################
 
 def make_pattern(pattern_value):
-    # if there aint no pattern, there aint no pattern
     if pattern_value is None:
         return None
 
@@ -310,11 +309,17 @@ def generate_maze(config: dict) -> list[list[int]]:
 
     grid = make_grid(width, height)
 
-    pattern_grid = make_pattern(pattern)
-    if pattern_grid:
-        mark_pattern(grid, pattern_grid)
+    if width >= 9 and height >= 7:
+        pattern_grid = make_pattern(pattern)
+        if pattern_grid:
+            mark_pattern(grid, pattern_grid)
+        else:
+            print(f"Warning: Could not create pattern '{pattern}'")
     else:
-        print(f"Warning: Could not create pattern '{pattern}'")
+        print(
+            f"Warning: Could not create pattern '{pattern}', "
+            "width and height nog sufficient, minimum = 9x7"
+            )
 
     mark_start_and_exit(grid, start, goal)
 
