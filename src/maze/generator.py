@@ -16,6 +16,7 @@ OPPOSITE = {
     'W': 'E'
 }
 
+# the cell type shit
 class Cell:
     def __init__(self, x, y) -> None:
         # this cell has these x & y coords
@@ -50,6 +51,8 @@ class Cell:
         self.pattern = False
 
 
+
+# makes the grid type shit
 def make_grid(width, height) -> list[list[Cell]]:
     grid = []
 
@@ -122,7 +125,7 @@ def mark_pattern(grid, pattern) -> None:
     # there needs to be atleast 2 normal-maze-cells
     # around the pattern, or its jut not gonna do
     # the pattern
-    if (h + 2) <  ph or (w + 2) < pw:
+    if (h + 1) <  ph or (w + 1) < pw:
         return
     
     # looks for the coords 
@@ -224,6 +227,55 @@ def get_unvisited_neighbors(grid, cell):
 
     return neighbors
 
+def get_all_neighbors(grid, cell):
+    neighbors = []
+    h = len(grid)
+    w = len(grid[0])
+    x = cell.x
+    y = cell.y
+
+    # Up
+    if y > 0:
+        neighbor = grid[y-1][x]
+        if not neighbor.pattern:
+            neighbors.append(neighbor)
+
+    # Down
+    if y < h-1:
+        neighbor = grid[y+1][x]
+        if not neighbor.pattern:
+            neighbors.append(neighbor)
+
+    # Left
+    if x > 0:
+        neighbor = grid[y][x-1]
+        if not neighbor.pattern:
+            neighbors.append(neighbor)
+
+    # Right
+    if x < w-1:
+        neighbor = grid[y][x+1]
+        if not neighbor.pattern:
+            neighbors.append(neighbor)
+
+    return neighbors
+
+
+def wall_exists_between(a, b):
+    dx = b.x - a.x
+    dy = b.y - a.y
+
+    if dx == 1:
+        return a.walls['E']
+    if dx == -1:
+        return a.walls['W']
+    if dy == 1:
+        return a.walls['S']
+    if dy == -1:
+        return a.walls['N']
+
+    return False
+
 
 def random_start(grid):
     return grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
@@ -233,6 +285,8 @@ def random_start(grid):
 ##########################################
 
 def sigma_male_random_maze_generator(grid, bias, seed, pattern) -> None:
+
+    # if the seed has not been made yet,
     if seed is not None:
         random.seed(seed)
 
@@ -279,6 +333,139 @@ def sigma_male_random_maze_generator(grid, bias, seed, pattern) -> None:
         # we dont wanna grow from this cell anymore
         else:
             active.remove(cell)
+##########################################
+#       Imperfections
+##########################################
+
+def wilson_sometimes_hunts(grid, bias, seed, pattern, imprate):
+
+    if seed is not None:
+        random.seed(seed)
+
+    mark_pattern(grid, pattern)
+
+    # --- Initialize tree with one visited cell ---
+    while True:
+        start = grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
+        if not start.pattern:
+            break
+
+    start.visited = True
+
+    while True:
+
+        unvisited = [
+            cell
+            for row in grid
+            for cell in row
+            if not cell.visited and not cell.pattern
+        ]
+
+        if not unvisited:
+            break
+
+        # =========================
+        # WILSON BRANCH
+        # =========================
+        if random.random() < bias:
+
+            cell = random.choice(unvisited)
+            path = [cell]
+
+            while not cell.visited:
+
+                neighbors = get_all_neighbors(grid, cell)
+
+                if not neighbors:
+                # Dead end — stop this walk
+                    break
+                
+                next_cell = random.choice(neighbors)
+
+
+
+                if next_cell in path:
+                    loop_index = path.index(next_cell)
+                    path = path[:loop_index + 1]
+                else:
+                    path.append(next_cell)
+
+                cell = next_cell
+
+            # Carve the loop-erased path
+            for i in range(len(path) - 1):
+
+                current = path[i]
+                next_cell = path[i + 1]
+
+                remove_wall_between(current, next_cell)
+
+                current.visited = True
+                next_cell.visited = True
+
+                # ---- IMPERFECTION ----
+                if random.randint(1, 100) <= imprate:
+
+                    extra_neighbors = [
+                        n for n in get_all_neighbors(grid, current)
+                        if n.visited and n != next_cell
+                    ]
+
+                    if extra_neighbors:
+                        extra = random.choice(extra_neighbors)
+
+                        if wall_exists_between(current, extra):
+                            remove_wall_between(current, extra)
+
+        # =========================
+        # HUNT BRANCH
+        # =========================
+        else:
+
+                        
+            random.shuffle(unvisited)
+
+            cell_found = False
+
+            for cell in unvisited:
+                visited_neighbors = [
+                    n for n in get_all_neighbors(grid, cell)
+                    if n.visited
+                ]
+
+                if not visited_neighbors:
+                    # Cannot connect this cell — try next one
+                    continue
+
+                # pick a random visited neighbor to connect
+                next_cell = random.choice(visited_neighbors)
+                remove_wall_between(cell, next_cell)
+                cell.visited = True
+
+                # ---- IMPERFECTION ----
+                if random.randint(1, 100) <= imprate:
+                    extra_neighbors = [
+                        n for n in get_all_neighbors(grid, cell)
+                        if n.visited and n != next_cell
+                    ]
+                    if extra_neighbors:
+                        extra = random.choice(extra_neighbors)
+                        if wall_exists_between(cell, extra):
+                            remove_wall_between(cell, extra)
+
+                cell_found = True
+                break  # exit the for-loop because we successfully added a cell
+
+            # If no unvisited cell could be connected (all trapped), mark one forcibly
+            if not cell_found:
+                trapped_cell = unvisited[0]
+                trapped_cell.visited = True
+
+
+
+
+    
+
 
 
 
@@ -302,6 +489,8 @@ def generate_maze(config: dict) -> list[list[int]]:
     height = config['HEIGHT']
     start = config['ENTRY']
     goal = config['EXIT']
+    perfect = config['PERFECT']
+    imprate = int(config['IMPRATE'])
     seed = config.get('SEED', None)
     bias = config.get('BIAS', 0.5)
     pattern = config.get('PATTERN', '42')
@@ -323,7 +512,13 @@ def generate_maze(config: dict) -> list[list[int]]:
 
     mark_start_and_exit(grid, start, goal)
 
-    sigma_male_random_maze_generator(grid, bias=bias, seed=seed, pattern=pattern)
+    if perfect:
+        sigma_male_random_maze_generator(grid, bias=bias, seed=seed, pattern=pattern)
+
+    if not perfect:
+        wilson_sometimes_hunts(grid, bias=bias, seed=seed, pattern=pattern, imprate = imprate)
+
+
 
     return grid
 
