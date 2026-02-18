@@ -1,9 +1,6 @@
 from src.patterns.digit_patterns import DIGITS
 from src.patterns.char_patterns import CHARS
 
-##########################################
-#       42 Reasons to stay
-##########################################
 
 def make_pattern(pattern_value):
     if pattern_value is None:
@@ -19,7 +16,7 @@ def make_pattern(pattern_value):
     # if it doesnt have 2 chars (more then 2), no pattern
     if len(s) != 2:
         return None
-    
+
     # first char is left, second char is right
     left = s[0]
     right = s[1]
@@ -63,11 +60,11 @@ def mark_pattern(grid, pattern) -> None:
     # there needs to be atleast 2 normal-maze-cells
     # around the pattern, or its jut not gonna do
     # the pattern
-    if (h + 1) <  ph or (w + 1) < pw:
+    if (h + 1) < ph or (w + 1) < pw:
         return
 
-    # looks for the coords 
-    start_x = (w - pw) // 2 
+    # looks for the coords
+    start_x = (w - pw) // 2
     start_y = (h - ph) // 2
 
     for py in range(ph):
@@ -79,10 +76,10 @@ def mark_pattern(grid, pattern) -> None:
                 cell = grid[grid_y][grid_x]
 
                 cell.walls = {
-                'N': True,
-                'E': True,
-                'S': True,
-                'W': True
+                    'N': True,
+                    'E': True,
+                    'S': True,
+                    'W': True
                 }
 
                 cell.visited = True

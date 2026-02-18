@@ -34,15 +34,19 @@ h(n) = esitmated distance to finish
 # 	-	this becomes G (goal)
 # else 
 # 	do a # if cell == 1
-# 	else do ' ' 
+# 	else do ' '
 # then print the line we just made yk
 # and do y++
-import heapq
 
-# manhattan function returns the distance
-# from current to goal (absolute distance)
-# (current_x - goal_x) + (current_y - goal_y)#
-def manhattan(a, b):
+
+
+
+def manhattan(a, b) -> int:
+    """
+    manhattan function returns the distance in int
+    from current to goal (absolute distance)
+    (current_x - goal_x) + (current_y - goal_y)
+    """
     return abs(a.x - b.x) + abs(a.y - b.y)
 
 
@@ -79,36 +83,37 @@ def reconstruct_path(goal) -> None:
 #   start = starting cell (with the cords etc)
 #   goal = the goal cell (with the cords etc)
 #   maze = 2d maze structure yk
-# 
+
 # Make 2 sets
 #   open_set = all cells we might still visit
 #   closed_set = all cells we already checked type xi
-# 
+
 # Initialize Start Cell
 #   g = distance from start to current
 #   mhd = manhattan distance to goal
 #   f = mhd + g
-# 
+
 # Add the start to the open set yk
-# 
 # while open_set
 #   keep looking untill there aint nothing to explore yk
-# 
+
 # currrent = min..etc.
 #   look through open_set
 #   idk wtf is happening here ngl
-# 
+
 # if current == goal
 #   check if the goal is reached type xi
 #   cuz then we gotta go back and reconstruct
 #   the path using the parent-chain-shit
-# 
+
 # open_set.remove(current) & closed_set.add(current)
 #   remove it from the ones we havent explored yet
 #   add it to the ones that we have already explored type xi#
+
+
 def solve_maze(grid) -> None:
     """
-    Uses A* pathfinding to solve the maze. 
+    Uses A* pathfinding to solve the maze.
 
     Finds the shortest possible path from the start to
     the goal cell by using Manhattan distance heuristic.
@@ -142,20 +147,20 @@ def solve_maze(grid) -> None:
     start.g = 0
     start.mhd = manhattan(start, goal)
     start.f = start.g + start.mhd
-        
+
     open_set.append(start)
 
     while open_set:
-        #look for the cell with the lowest f
+        # look for the cell with the lowest f
         current = min(open_set, key=lambda c: c.f)
-        
+
         if current == goal:
             reconstruct_path(goal)
             return
 
         open_set.remove(current)
         closed_set.add(current)
-        
+
         for neighbor in get_neighbors(current, grid):
             if neighbor in closed_set:
                 continue

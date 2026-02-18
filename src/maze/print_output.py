@@ -1,6 +1,7 @@
 from src.rendering.mlx_renderer import cell_to_tile_index
 from src.maze.generator import Cell
 
+
 def mark_goal(grid) -> Cell:
     """
     finds the 'goal' cell in grid, returns cell.
@@ -33,10 +34,11 @@ def print_doors(config, f) -> None:
     exit_x, exit_y = config['EXIT']
     f.write(f"\n{entry_x},{entry_y}\n{exit_x},{exit_y}")
 
+
 def print_path(grid, f) -> None:
     """
     Tracks from goal (current) to start what direction
-    the path has made. 
+    the path has made.
     """
     current = mark_goal(grid)
     directions = []

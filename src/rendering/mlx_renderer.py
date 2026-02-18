@@ -1,5 +1,5 @@
 from mlx import Mlx
-import sys
+
 
 class MLXDisplay():
     TILE_SIZE = 32
@@ -13,7 +13,7 @@ class MLXDisplay():
         self.show_solution = False
         self.running = True
 
-        win_width = width * self.TILE_SIZE
+        win_width = max(width * self.TILE_SIZE, 320)
         win_height = height * self.TILE_SIZE + self.BUTTON_BAR_HEIGHT
 
         self.mlx = Mlx()
@@ -25,7 +25,8 @@ class MLXDisplay():
             f"A-Maze-ing, {self.height}x{self.width}"
         )
 
-        # self.mlx.mlx_sync(self.mlx.SYNC_IMAGE_WRITABLE, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
+        # self.mlx.mlx_sync(self.mlx.SYNC_IMAGE_WRITABLE,
+        # #self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
         self.tiles = self.load_tiles()
         # Hook for window close (X button) - event 17
         self.mlx.mlx_hook(self.win_ptr, 17, 0, self.close_window, None)
@@ -39,7 +40,7 @@ class MLXDisplay():
         if keycode == 65307:
             self.close_window(None)
         return 0
-    
+
     def mouse_handler(self, button, x, y, param):
         """Handle mouse button clicks"""
         if button == 1:
@@ -50,28 +51,56 @@ class MLXDisplay():
         """Properly close the window and exit"""
         self.running = False
 
-
     def load_tiles(self):
         """Load all tile png's"""
         tiles = {}
         for i in range(16):
             filename = f"assets/tile_{i:x}.png"
-            img_ptr, w, h = self.mlx.mlx_png_file_to_image(self.mlx_ptr, filename)
+            img_ptr, w, h = (
+                self.mlx.mlx_png_file_to_image(self.mlx_ptr, filename)
+            )
             tiles[i] = img_ptr
-        
+
         # Load path/start/goal markers
-        tiles['path'], _, _ = self.mlx.mlx_png_file_to_image(self.mlx_ptr, "assets/path_marker.png")
-        tiles['start'], _, _ = self.mlx.mlx_png_file_to_image(self.mlx_ptr, "assets/start_marker.png")
-        tiles['goal'], _, _ = self.mlx.mlx_png_file_to_image(self.mlx_ptr, "assets/goal_marker.png")
-        
+        tiles['path'], _, _ = (
+            self.mlx.mlx_png_file_to_image(
+                self.mlx_ptr, "assets/path_marker.png"
+                )
+        )
+        tiles['start'], _, _ = (
+            self.mlx.mlx_png_file_to_image(
+                self.mlx_ptr, "assets/start_marker.png"
+                )
+        )
+        tiles['goal'], _, _ = (
+            self.mlx.mlx_png_file_to_image(
+                self.mlx_ptr, "assets/goal_marker.png"
+                )
+        )
+
         # Load UI buttons
-        tiles['btn_bar'], _, _ = self.mlx.mlx_png_file_to_image(self.mlx_ptr, "assets/btn_bar.png")
-        tiles['btn_generate'], _, _ = self.mlx.mlx_png_file_to_image(self.mlx_ptr, "assets/btn_generate.png")
-        tiles['btn_solve'], _, _ = self.mlx.mlx_png_file_to_image(self.mlx_ptr, "assets/btn_solve.png")
-        tiles['btn_hide'], _, _ = self.mlx.mlx_png_file_to_image(self.mlx_ptr, "assets/btn_hide.png")
-        
+        tiles['btn_bar'], _, _ = (
+            self.mlx.mlx_png_file_to_image(
+                self.mlx_ptr, "assets/btn_bar.png"
+                )
+        )
+        tiles['btn_generate'], _, _ = (
+            self.mlx.mlx_png_file_to_image(
+                self.mlx_ptr, "assets/btn_generate.png"
+                )
+        )
+        tiles['btn_solve'], _, _ = (
+            self.mlx.mlx_png_file_to_image(
+                self.mlx_ptr, "assets/btn_solve.png"
+                )
+        )
+        tiles['btn_hide'], _, _ = (
+            self.mlx.mlx_png_file_to_image(
+                self.mlx_ptr, "assets/btn_hide.png"
+                )
+        )
         return tiles
-    
+
     def render(self):
         """Render the display"""
         self.render_maze()
@@ -87,7 +116,7 @@ class MLXDisplay():
             for x in range(self.width):
                 cell = self.grid[y][x]
                 tile_index = cell_to_tile_index(cell)
-                
+
                 px = x * self.TILE_SIZE
                 py = y * self.TILE_SIZE + self.BUTTON_BAR_HEIGHT
 
@@ -156,15 +185,18 @@ class MLXDisplay():
             self.mlx_ptr, self.win_ptr,
             self.tiles['btn_bar'], 0, 0
         )
-    
+
         # Draw generate button at (10, 10)
         self.mlx.mlx_put_image_to_window(
             self.mlx_ptr, self.win_ptr,
             self.tiles['btn_generate'], 10, 10
         )
-        
+
         # Draw solve/hide button at (170, 10)
-        solve_img = self.tiles['btn_hide'] if self.show_solution else self.tiles['btn_solve']
+        solve_img = (
+            self.tiles['btn_hide'] if self.show_solution
+            else self.tiles['btn_solve']
+        )
         self.mlx.mlx_put_image_to_window(
             self.mlx_ptr, self.win_ptr,
             solve_img, 170, 10
@@ -207,6 +239,7 @@ class MLXDisplay():
         self.mlx.mlx_sync(self.mlx_ptr, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
         self.render()
 
+
 def cell_to_tile_index(cell) -> int:
     """
     Convert a Cell's wall configuration to a tile index (0-15).
@@ -231,7 +264,7 @@ def cell_to_tile_index(cell) -> int:
 
 def print_maze_mlx(grid, config):
     from src.maze.print_output import print_output_main
-    print_output_main(grid, config)   
+    print_output_main(grid, config)
     display = MLXDisplay(grid, config['WIDTH'], config['HEIGHT'], config)
     display.render()
 
@@ -240,6 +273,6 @@ def print_maze_mlx(grid, config):
             display.mlx.mlx_loop_exit(display.mlx_ptr)
             print("Esc key pressed - closing MLX")
         return 0
-    
+
     display.mlx.mlx_loop_hook(display.mlx_ptr, check_running, None)
     display.mlx.mlx_loop(display.mlx_ptr)

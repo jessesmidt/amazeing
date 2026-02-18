@@ -14,7 +14,6 @@ GOAL_BLOCK = "\033[41m  \033[0m"
 PATH_BLOCK = "\033[44m  \033[0m"
 
 
-
 def print_maze_ascii(grid):
     h = len(grid)
     w = len(grid[0])
@@ -134,7 +133,4 @@ def print_maze_ascii(grid):
                 print(PATTERN_WALL, end="")
             else:
                 print(WALL, end="")
-
         print()
-
-
