@@ -1,7 +1,7 @@
 import sys
 from src.config_parser import parse_config
 from src.maze.generator import generate_maze
-from src.maze.print_output import print_output
+from src.maze.print_output import print_output_main
 from src.maze.maze_solver import solve_maze
 from src.rendering.terminal_renderer import print_maze_ascii
 from src.rendering.mlx_renderer import print_maze_mlx
@@ -29,8 +29,9 @@ def main():
         print_maze_mlx(grid, config)
     else:
         print_maze_ascii(grid)
+        print_output_main(grid, config)
 
-    print_output(grid)
+    
 
     
 

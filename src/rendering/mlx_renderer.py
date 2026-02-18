@@ -11,6 +11,7 @@ class MLXDisplay():
         self.height = height
         self.config = config
         self.show_solution = False
+        self.running = True
 
         win_width = width * self.TILE_SIZE
         win_height = height * self.TILE_SIZE + self.BUTTON_BAR_HEIGHT
@@ -26,7 +27,6 @@ class MLXDisplay():
 
         # self.mlx.mlx_sync(self.mlx.SYNC_IMAGE_WRITABLE, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
         self.tiles = self.load_tiles()
-
         # Hook for window close (X button) - event 17
         self.mlx.mlx_hook(self.win_ptr, 17, 0, self.close_window, None)
         # Hook for key press
@@ -48,10 +48,7 @@ class MLXDisplay():
 
     def close_window(self, param):
         """Properly close the window and exit"""
-        # Destroy window
-        self.mlx.mlx_destroy_window(self.mlx_ptr, self.win_ptr)
-        self.win = None
-        self.mlx = None
+        self.running = False
 
 
     def load_tiles(self):
@@ -193,7 +190,11 @@ class MLXDisplay():
     def regenerate_maze(self, config):
         """Regenerate the maze and redraw"""
         from src.maze.generator import generate_maze
+        from src.maze.print_output import print_output_main
+        from src.maze.maze_solver import solve_maze
         self.grid = generate_maze(config)
+        solve_maze(self.grid)
+        print_output_main(self.grid, config)
         self.show_solution = False
         self.mlx.mlx_clear_window(self.mlx_ptr, self.win_ptr)
         self.mlx.mlx_sync(self.mlx_ptr, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
@@ -201,16 +202,6 @@ class MLXDisplay():
 
     def toggle_solution(self):
         """Toggle showing/hiding the solution path"""
-        if not self.show_solution:
-            from src.maze.maze_solver import solve_maze
-            solve_maze(self.grid)
-
-            path_count = sum(1 for row in self.grid for cell in row if cell.in_path)
-            print(f"Path cells found: {path_count}")
-
-            if path_count == 0:
-                print("WARNING: No path found! solve_maze might not be setting cell.in_path")
-
         self.show_solution = not self.show_solution
         self.mlx.mlx_clear_window(self.mlx_ptr, self.win_ptr)
         self.mlx.mlx_sync(self.mlx_ptr, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
@@ -239,6 +230,16 @@ def cell_to_tile_index(cell) -> int:
 
 
 def print_maze_mlx(grid, config):
+    from src.maze.print_output import print_output_main
+    print_output_main(grid, config)   
     display = MLXDisplay(grid, config['WIDTH'], config['HEIGHT'], config)
     display.render()
+
+    def check_running(param):
+        if not display.running:
+            display.mlx.mlx_loop_exit(display.mlx_ptr)
+            print("Esc key pressed - closing MLX")
+        return 0
+    
+    display.mlx.mlx_loop_hook(display.mlx_ptr, check_running, None)
     display.mlx.mlx_loop(display.mlx_ptr)

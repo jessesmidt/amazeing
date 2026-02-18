@@ -12,13 +12,10 @@ def mark_goal(grid) -> Cell:
     return goal
 
 
-def print_output(grid) -> None:
+def print_maze_hex(grid, f) -> None:
     """
-    Opens or creates output_maze.txt
     Outputs the  per cell in hexadecimal value.
-    calls the print path function.
     """
-    f = open('output_maze.txt', 'w')
     h = len(grid)
     w = len(grid[0])
     for y in range(h):
@@ -27,8 +24,14 @@ def print_output(grid) -> None:
             f.write(f"{cell_to_tile_index(cell):x}")
         f.write("\n")
 
-    print_path(grid, f)
 
+def print_doors(config, f) -> None:
+    """
+    Finds entrance and exit and prints coordinates
+    """
+    entry_x, entry_y = config['ENTRY']
+    exit_x, exit_y = config['EXIT']
+    f.write(f"\n{entry_x},{entry_y}\n{exit_x},{exit_y}")
 
 def print_path(grid, f) -> None:
     """
@@ -52,4 +55,16 @@ def print_path(grid, f) -> None:
 
         current = parent
     directions.reverse()
-    f.write(f"{''.join(directions)}")
+    f.write(f"\n{''.join(directions)}")
+
+
+def print_output_main(grid, config) -> None:
+    """
+    Opens or creates output_maze.txt,
+    calls the print path function.
+    """
+    print("Printing output_maze.txt")
+    f = open('output_maze.txt', 'w')
+    print_maze_hex(grid, f)
+    print_doors(config, f)
+    print_path(grid, f)
