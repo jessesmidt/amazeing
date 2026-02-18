@@ -80,7 +80,7 @@ class MLXDisplay():
         self.render_maze()
         if self.show_solution:
             self.render_path()
-
+        self.render_doors()
         self.draw_buttons()
 
         self.mlx.mlx_sync(self.mlx_ptr, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
@@ -132,6 +132,27 @@ class MLXDisplay():
                         self.tiles['goal'], px, py
                     )
 
+    def render_doors(self):
+        """Draw entrance and exit doors using images"""
+        for y in range(self.height):
+            for x in range(self.width):
+                cell = self.grid[y][x]
+
+                px = x * self.TILE_SIZE
+                py = y * self.TILE_SIZE + self.BUTTON_BAR_HEIGHT
+
+                if cell.is_start:
+                    self.mlx.mlx_put_image_to_window(
+                        self.mlx_ptr, self.win_ptr,
+                        self.tiles['start'], px, py
+                    )
+
+                if cell.is_goal:
+                    self.mlx.mlx_put_image_to_window(
+                        self.mlx_ptr, self.win_ptr,
+                        self.tiles['goal'], px, py
+                    )
+
     def draw_buttons(self):
         """Draw button bar using images"""
         self.mlx.mlx_put_image_to_window(
@@ -168,7 +189,6 @@ class MLXDisplay():
         elif 170 <= x <= 310 and btn_y <= y <= btn_y + btn_height:
             print("Solve button clicked!")
             self.toggle_solution()
-
 
     def regenerate_maze(self, config):
         """Regenerate the maze and redraw"""
