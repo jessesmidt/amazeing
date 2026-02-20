@@ -8,7 +8,7 @@ f(n) = best case total distance if i pick this node
 
 g(n) = cost from start to current node
         - so amount of steps taken so far yk
-		
+
 h(n) = esitmated distance to finish
         - something like manhatten works well for this or something
 """
@@ -19,12 +19,12 @@ h(n) = esitmated distance to finish
 # 	- 	maze (assortment of 1's and 0's in a grid)
 # 	- 	entry (x & y cords of the entry/start)
 # 	-	exit (x & y cords of the exit/finish)
-# 
+
 # for loop condition
-# 	-	for y (row indexing)
-# 	-	, row (tell y is the row indexing)
-#	-	indexes inside maze (checks if indexes exist)
-# 
+# -	for y (row indexing)
+# -	, row (tell y is the row indexing)
+# -	indexes inside maze (checks if indexes exist)
+
 # for x, cell in enumerate(row)
 # 	-	x is just the indexing for each collum (cell)
 # 	-	inumerate(row), get the row indexing, also just y
@@ -32,13 +32,11 @@ h(n) = esitmated distance to finish
 # 	-	this becomes S (start)
 # else if goal coords == current coords
 # 	-	this becomes G (goal)
-# else 
+# else
 # 	do a # if cell == 1
 # 	else do ' '
 # then print the line we just made yk
 # and do y++
-
-
 
 
 def manhattan(a, b) -> int:

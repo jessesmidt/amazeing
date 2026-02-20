@@ -9,14 +9,14 @@ OPPOSITE = {
 def mark_start_and_exit(grid, start, goal) -> None:
     """
     Connects the config file's start and goal cell
-    and marks them. 
+    and marks them.
     """
     sx, sy = start
     gx, gy = goal
 
     start_cell = grid[sy][sx]
     goal_cell = grid[gy][gx]
-    
+
     start_cell.is_start = True
     goal_cell.is_goal = True
 

@@ -6,10 +6,11 @@ from src.maze.maze_solver import solve_maze
 from src.rendering.terminal_renderer import TerminalDisplay
 from src.rendering.mlx_renderer import print_maze_mlx
 
+
 def main() -> None:
     """
     Checks for amount of arguments, parses config,
-    creates and solves a grid. Then chooses a 
+    creates and solves a grid. Then picks render option.
     """
     if len(sys.argv) != 2:
         print("Usage: python3 a_maze_ing.py config.txt")
@@ -39,4 +40,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-	main()
+    main()

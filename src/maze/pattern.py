@@ -1,6 +1,5 @@
 from src.patterns.digit_patterns import DIGITS
 from src.patterns.char_patterns import CHARS
-import sys
 
 
 def make_pattern(pattern_value) -> list:
@@ -78,11 +77,11 @@ def mark_pattern(grid, pattern) -> None:
 
                 if cell.is_start:
                     raise ValueError(
-                        "Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        "Pattern overlaps with entry at ({grid_x}, {grid_y})"
                         )
                 elif cell.is_goal:
                     raise ValueError(
-                        "Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        "Pattern overlaps with exit at ({grid_x}, {grid_y})"
                         )
 
                 cell.walls = {
@@ -94,8 +93,8 @@ def mark_pattern(grid, pattern) -> None:
 
                 cell.visited = True
                 cell.pattern = True
-                
-            # extra flag for cells stuck inside patterns    
+
+            # extra flag for cells stuck inside patterns
             if pattern[py][px] == 2:
                 grid_x = start_x + px
                 grid_y = start_y + py
@@ -104,11 +103,11 @@ def mark_pattern(grid, pattern) -> None:
 
                 if cell.is_start:
                     raise ValueError(
-                        f"Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        f"Pattern overlaps with entry at ({grid_x}, {grid_y})"
                         )
                 elif cell.is_goal:
                     raise ValueError(
-                        f"Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        f"Pattern overlaps with exit at ({grid_x}, {grid_y})"
                         )
 
                 cell.visited = True

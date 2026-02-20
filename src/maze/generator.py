@@ -1,5 +1,4 @@
 import random
-import sys
 from .pattern import make_pattern, mark_pattern
 from .generator_utils import (
     get_all_neighbors,
@@ -51,7 +50,9 @@ def sigma_male_random_maze_generator(grid, bias, seed) -> None:
 
     # find a random cell to start at yk that isnt in the patern
     while True:
-        start = grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
+        start = (
+            grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
+            )
         if not start.pattern:
             break
     start.visited = True
@@ -87,7 +88,9 @@ def wilson_sometimes_hunts(grid, bias, seed, imprate) -> None:
 
     # --- Initialize tree with one visited cell ---
     while True:
-        start = grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
+        start = (
+            grid[random.randrange(len(grid))][random.randrange(len(grid[0]))]
+            )
         if not start.pattern:
             break
 
@@ -277,7 +280,7 @@ def generate_maze(config: dict) -> list[list[Cell]]:
 #         config: Dict with mandatory keys WIDTH, HEIGHT, ENTRY,
 #             EXIT, PERFECT
 #         optional: SEED, BIAS, PATTERN, RENDER
-    
+
 #         Returns: 2D list of Cell objects representing the maze
 #     """
 #     width = config['WIDTH']

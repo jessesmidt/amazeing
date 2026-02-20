@@ -51,9 +51,9 @@ clean:
 # Run linting with flake8 and mypy (mandatory flags)
 lint:
 	@echo "Running flake8..."
-	python3 -m flake8
+	$(PYTHON) -m flake8
 	@echo "Running mypy with required flags..."
-	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	$(PYTHON) -m mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 # Run strict linting (optional, enhanced checking)
 lint-strict:
