@@ -1,5 +1,6 @@
 from src.patterns.digit_patterns import DIGITS
 from src.patterns.char_patterns import CHARS
+import sys
 
 
 def make_pattern(pattern_value) -> list:
@@ -57,6 +58,10 @@ def mark_pattern(grid, pattern) -> None:
     # around the pattern, or its just not gonna do
     # the pattern
     if (h + 1) < ph or (w + 1) < pw:
+        input(
+            "Warning: Maze too small for '42' pattern (min 9x7)."
+            "\nPress Enter to continue..."
+            )
         return
 
     # looks for the coords

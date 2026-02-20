@@ -2,7 +2,7 @@ import os
 import time
 from src.maze.generator import Cell
 
-WALL = "██"
+WALL = "██" 
 EMPTY = "  "
 
 PATTERN_WALL = "▒▒"
@@ -21,6 +21,7 @@ class TerminalDisplay:
         self.config = config
         self.show_solution = False
         self.color_index = 0
+        self.error_message = None
 
     def render(self) -> None:
         """
@@ -29,7 +30,9 @@ class TerminalDisplay:
         while True:
             os.system('clear')
             self.draw_maze()
-
+            
+            if self.error_message:
+                print(f"\n {self.error_message}")
             choice = self.ascii_menu()
 
             if not self.handle_choice(choice):
@@ -176,6 +179,7 @@ class TerminalDisplay:
             return -1
         
     def handle_choice(self, choice: int) -> bool:
+        from src.maze.print_output import print_output_main
         if choice == 1:
             self.regenerate_maze()
         elif choice == 2:

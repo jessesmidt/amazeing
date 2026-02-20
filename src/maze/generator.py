@@ -216,7 +216,7 @@ class MazeGenerator:
         self.bias = config.get('BIAS', 0.5)
         self.pattern_value = config.get('PATTERN', '42')
         self.render = config.get('RENDER', '2D')
-        self.imprate = config.get('IMPRATE', 35)
+        self.imprate = config.get('IMPRATE', 65)
 
         if self.seed is not None:
             random.seed(self.seed)
