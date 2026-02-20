@@ -2,18 +2,16 @@ from src.patterns.digit_patterns import DIGITS
 from src.patterns.char_patterns import CHARS
 
 
-def make_pattern(pattern_value):
+def make_pattern(pattern_value) -> list:
     if pattern_value is None:
         return None
 
     # convert the input to a string
     s = str(pattern_value).lower()
 
-    # if there is only 1 input
+    # if there is only 1 input, add char. Else return None.
     if len(s) == 1:
         s = "0" + s
-
-    # if it doesnt have 2 chars (more then 2), no pattern
     if len(s) != 2:
         return None
 
@@ -21,7 +19,7 @@ def make_pattern(pattern_value):
     left = s[0]
     right = s[1]
 
-    # check if the left is in digits or chars or neither
+    # check if they're in digits, chars or neither
     if left in DIGITS:
         left = DIGITS[left]
     elif left in CHARS:
@@ -29,7 +27,6 @@ def make_pattern(pattern_value):
     else:
         return None
 
-    # check if right is in digits or chars or neither
     if right in DIGITS:
         right = DIGITS[right]
     elif right in CHARS:
@@ -37,19 +34,18 @@ def make_pattern(pattern_value):
     else:
         return None
 
-    # make the pattern
+    # make a list called pattern
     # first append the row of left-digit
     # then add a 0, empty
     # then append the row if the right-digit
     pattern = []
     for row in range(len(left)):
-        pattern.append(left[row] + [0] + right[row])  # add a gap column
+        pattern.append(left[row] + [0] + right[row])  # add a gap column [0]
 
     return pattern
 
 
 def mark_pattern(grid, pattern) -> None:
-
     # get the height & width of the grid
     # get the height & width of the pattern
     h = len(grid)
@@ -58,7 +54,7 @@ def mark_pattern(grid, pattern) -> None:
     pw = len(pattern[0])
 
     # there needs to be atleast 2 normal-maze-cells
-    # around the pattern, or its jut not gonna do
+    # around the pattern, or its just not gonna do
     # the pattern
     if (h + 1) < ph or (w + 1) < pw:
         return
@@ -75,6 +71,15 @@ def mark_pattern(grid, pattern) -> None:
 
                 cell = grid[grid_y][grid_x]
 
+                if cell.is_start:
+                    raise ValueError(
+                        "Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        )
+                elif cell.is_goal:
+                    raise ValueError(
+                        "Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        )
+
                 cell.walls = {
                     'N': True,
                     'E': True,
@@ -84,3 +89,21 @@ def mark_pattern(grid, pattern) -> None:
 
                 cell.visited = True
                 cell.pattern = True
+                
+            # extra flag for cells stuck inside patterns    
+            if pattern[py][px] == 2:
+                grid_x = start_x + px
+                grid_y = start_y + py
+
+                cell = grid[grid_y][grid_x]
+
+                if cell.is_start:
+                    raise ValueError(
+                        f"Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        )
+                elif cell.is_goal:
+                    raise ValueError(
+                        f"Pattern overlaps with entry or exit at ({grid_x}, {grid_y})"
+                        )
+
+                cell.visited = True

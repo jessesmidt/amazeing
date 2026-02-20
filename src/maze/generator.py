@@ -1,4 +1,5 @@
 import random
+import sys
 from .pattern import make_pattern, mark_pattern
 from .generator_utils import (
     get_all_neighbors,

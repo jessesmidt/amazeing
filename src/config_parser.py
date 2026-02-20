@@ -57,7 +57,9 @@ def parse_config(filename: str) -> dict:
         exit_pos = (int(exit_parts[0]), int(exit_parts[1]))
         config['EXIT'] = exit_pos
 
-        if not (0 <= entry[0] < config['WIDTH'] and 0 <= entry[1] < config['HEIGHT']):
+        if not (
+            0 <= entry[0] < config['WIDTH'] and 0 <= entry[1] < config['HEIGHT']
+            ):
             raise ValueError(f"ENTRY {entry} is outside maze bounds")
 
         if not (0 <= exit_pos[0] < config['WIDTH'] and 0 <= exit_pos[1] < config['HEIGHT']):

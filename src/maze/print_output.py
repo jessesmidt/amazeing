@@ -66,7 +66,7 @@ def print_output_main(grid, config) -> None:
     calls the print path function.
     """
     print("Printing output_maze.txt")
-    f = open('output_maze.txt', 'w')
+    f = open({config['OUTPUT_FILE']}, "w")
     print_maze_hex(grid, f)
     print_doors(config, f)
     print_path(grid, f)

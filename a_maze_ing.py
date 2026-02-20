@@ -22,7 +22,12 @@ def main():
         return
     print(f"Config loaded successfully!\n{config}")
 
-    grid = generate_maze(config)
+    try:
+        grid = generate_maze(config)
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
     solve_maze(grid)
 
     if config['RENDER'] == 'MLX':
