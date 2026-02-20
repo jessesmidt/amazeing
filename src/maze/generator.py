@@ -237,10 +237,10 @@ class MazeGenerator:
 
     def generate(self) -> list[list[Cell]]:
 
+        mark_start_and_exit(self.grid, self.start, self.goal)
+
         if self.pattern:
             mark_pattern(self.grid, self.pattern)
-
-        mark_start_and_exit(self.grid, self.start, self.goal)
 
         if self.perfect:
             sigma_male_random_maze_generator(
