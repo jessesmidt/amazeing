@@ -199,19 +199,24 @@ def wilson_sometimes_hunts(grid, bias, seed, imprate) -> None:
 
 class MazeGenerator:
 
-    def __init__(self, config: dict):
+    def __init__(self, config: dict) -> None:
+        """
+        Initializes grid and required config inputs.
+        Uses get() to set values to optional keys.
+        Calls make_pattern to mark pattern on 2d grid.
+        """
 
         self.width = config['WIDTH']
         self.height = config['HEIGHT']
         self.start = config['ENTRY']
         self.goal = config['EXIT']
         self.perfect = config['PERFECT']
-        self.imprate = int(config['IMPRATE'])
 
         self.seed = config.get('SEED')
         self.bias = config.get('BIAS', 0.5)
         self.pattern_value = config.get('PATTERN', '42')
         self.render = config.get('RENDER', '2D')
+        self.imprate = config.get('IMPRATE', 35)
 
         if self.seed is not None:
             random.seed(self.seed)

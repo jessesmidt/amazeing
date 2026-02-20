@@ -12,7 +12,7 @@ def parse_config(filename: str) -> dict:
     """
     config = {}
     required_keys = {'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'OUTPUT_FILE', 'PERFECT'}
-    # optional_keys = {'SEED', 'BIAS', 'PATTERN', 'RENDER'}
+    # optional_keys = {'SEED', 'BIAS', 'PATTERN', 'RENDER', 'IMPRATE}
 
     if not os.path.exists(filename):
         raise FileNotFoundError(f"Configuration file '{filename}' not found.")
@@ -26,7 +26,7 @@ def parse_config(filename: str) -> dict:
 
             parts = line.split('=')
             if len(parts) != 2:
-                raise ValueError(f"Invalid line format: '{line}'. Expected KEY=VALUE")
+                raise ValueError(f"Invalid config line format: '{line}'. Expected KEY=VALUE")
 
             key = parts[0].strip()
             value = parts[1].strip()
@@ -35,7 +35,7 @@ def parse_config(filename: str) -> dict:
 
     missing_keys = required_keys - config.keys()
     if missing_keys:
-        raise ValueError(f"Missing required keys: {missing_keys}")
+        raise ValueError(f"Missing required config keys: {missing_keys}")
 
     try:
         # Required conversions
@@ -96,6 +96,12 @@ def parse_config(filename: str) -> dict:
                 raise ValueError("RENDER must be either MLX or ASCII")
 
             config['RENDER'] = str(config['RENDER'])
+
+        if 'IMPRATE' in config:
+            imprate = int(config['IMPRATE'])
+            if not (0 <= imprate <= 100):
+                raise ValueError("IMPRATE must be between 0 and 100")
+            config['IMPRATE'] = imprate
 
     except (ValueError, IndexError) as e:
         raise ValueError(f"Invalid value in config: {e}")
