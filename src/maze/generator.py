@@ -1,8 +1,13 @@
 import random
 from .pattern import make_pattern, mark_pattern
-from .generator_utils import get_all_neighbors, mark_start_and_exit
-from .generator_utils import get_unvisited_neighbors
-from .generator_utils import remove_wall_between, wall_exists_between
+from .generator_utils import (
+    get_all_neighbors,
+    mark_start_and_exit,
+    get_unvisited_neighbors,
+    remove_wall_between,
+    wall_exists_between
+)
+
 
 class Cell:
     def __init__(self, x, y) -> None:
@@ -36,33 +41,12 @@ class Cell:
         self.pattern = False
 
 
-def make_grid(width, height) -> list[list[Cell]]:
-    """
-    Initializes grid for config's values of
-    height and width. Returns the grid of cells
-    in nested lists.
-    """
-    grid = []
-
-    for y in range(height):
-        row = []
-        for x in range(width):
-            row.append(Cell(x, y))
-        grid.append(row)
-
-    return grid
-
-
-def sigma_male_random_maze_generator(grid, bias, seed, pattern) -> None:
+def sigma_male_random_maze_generator(grid, bias, seed) -> None:
     """
     Shi leipe functie
     """
-    # if the seed has not been made yet,
     if seed is not None:
         random.seed(seed)
-
-    # mark all the cells with a pattern
-    mark_pattern(grid, pattern)
 
     # find a random cell to start at yk that isnt in the patern
     while True:
@@ -71,39 +55,27 @@ def sigma_male_random_maze_generator(grid, bias, seed, pattern) -> None:
             break
     start.visited = True
 
-    # list of cells we are currently growing from
-    # first one would be start ofc
     active = [start]
 
     while active:
-        # decide which cell to go from next
-        # if // go from the last cell, DFS, long corridors
-        # else // go from random cell we can grow from, Prim, roomy
+
         if random.random() < bias:
             cell = active[-1]
         else:
             cell = random.choice(active)
 
-        # we get the unvisited neighbours of the cell we are at
-        # neighbours is a list of cells with .visited = False
         neighbors = get_unvisited_neighbors(grid, cell)
 
-        # if the cell has any neighbors that havent been visited yet
-        # pick a random neighboring cell
-        # remove the all in between them
-        # that neighbor is now visited
-        # we add it to the active list
         if neighbors:
             next = random.choice(neighbors)
             remove_wall_between(cell, next)
             next.visited = True
             active.append(next)
-
         else:
             active.remove(cell)
 
 
-def wilson_sometimes_hunts(grid, bias, seed, pattern, imprate) -> None:
+def wilson_sometimes_hunts(grid, bias, seed, imprate) -> None:
     """
     Imperfections
     Insane functie waar Sem de docstring voor gaat schrijven
@@ -111,8 +83,6 @@ def wilson_sometimes_hunts(grid, bias, seed, pattern, imprate) -> None:
 
     if seed is not None:
         random.seed(seed)
-
-    mark_pattern(grid, pattern)
 
     # --- Initialize tree with one visited cell ---
     while True:
@@ -158,7 +128,6 @@ def wilson_sometimes_hunts(grid, bias, seed, pattern, imprate) -> None:
 
                 cell = next_cell
 
-            # Carve the loop-erased path
             for i in range(len(path) - 1):
 
                 current = path[i]
@@ -186,7 +155,7 @@ def wilson_sometimes_hunts(grid, bias, seed, pattern, imprate) -> None:
 # =========================
 # HUNT BRANCH
 # =========================
-        else:       
+        else:
             random.shuffle(unvisited)
 
             cell_found = False
@@ -198,15 +167,12 @@ def wilson_sometimes_hunts(grid, bias, seed, pattern, imprate) -> None:
                 ]
 
                 if not visited_neighbors:
-                    # Cannot connect this cell — try next one
                     continue
 
-                # pick a random visited neighbor to connect
                 next_cell = random.choice(visited_neighbors)
                 remove_wall_between(cell, next_cell)
                 cell.visited = True
 
-                # ---- IMPERFECTION ----
                 if random.randint(1, 100) <= imprate:
                     extra_neighbors = [
                         n for n in get_all_neighbors(grid, cell)
@@ -220,53 +186,127 @@ def wilson_sometimes_hunts(grid, bias, seed, pattern, imprate) -> None:
                 cell_found = True
                 break
 
-            # If no unvisited cell could be connected (all trapped), mark one forcibly
             if not cell_found:
                 trapped_cell = unvisited[0]
                 trapped_cell.visited = True
 
 
-def generate_maze(config: dict) -> list[list[int]]:
-    """
-    Generate a maze base on configuration dictionary.
+##########################################
+#       Run that shit
+##########################################
 
-    Args:
-        config: Dict with mandatory keys WIDTH, HEIGHT, ENTRY,
-            EXIT, PERFECT
-        optional: SEED, BIAS, PATTERN, RENDER
-    
-        Returns: 2D list of Cell objects representing the maze
-    """
-    width = config['WIDTH']
-    height = config['HEIGHT']
-    start = config['ENTRY']
-    goal = config['EXIT']
-    perfect = config['PERFECT']
-    imprate = int(config['IMPRATE'])
-    seed = config.get('SEED', None)
-    bias = config.get('BIAS', 0.5)
-    pattern = config.get('PATTERN', '42')
 
-    grid = make_grid(width, height)
+class MazeGenerator:
 
-    if width >= 9 and height >= 7:
-        pattern_grid = make_pattern(pattern)
-        if pattern_grid:
-            mark_pattern(grid, pattern_grid)
+    def __init__(self, config: dict):
+
+        self.width = config['WIDTH']
+        self.height = config['HEIGHT']
+        self.start = config['ENTRY']
+        self.goal = config['EXIT']
+        self.perfect = config['PERFECT']
+        self.imprate = int(config['IMPRATE'])
+
+        self.seed = config.get('SEED')
+        self.bias = config.get('BIAS', 0.5)
+        self.pattern_value = config.get('PATTERN', '42')
+        self.render = config.get('RENDER', '2D')
+
+        if self.seed is not None:
+            random.seed(self.seed)
+
+        self.grid = self.make_grid()
+        self.pattern = make_pattern(self.pattern_value)
+
+    def make_grid(self) -> list[list[Cell]]:
+        """
+        Initializes grid for config's values of
+        height and width. Returns the grid of cells
+        in nested lists.
+        """
+        grid = []
+
+        for y in range(self.height):
+            row = []
+            for x in range(self.width):
+                row.append(Cell(x, y))
+            grid.append(row)
+
+        return grid
+
+    def generate(self) -> list[list[Cell]]:
+
+        if self.pattern:
+            mark_pattern(self.grid, self.pattern)
+
+        mark_start_and_exit(self.grid, self.start, self.goal)
+
+        if self.perfect:
+            sigma_male_random_maze_generator(
+                self.grid,
+                bias=self.bias,
+                seed=self.seed,
+            )
         else:
-            print(f"Warning: Could not create pattern '{pattern}'")
-    else:
-        print(
-            f"Warning: Could not create pattern '{pattern}', "
-            "width and height not sufficient, minimum = 9x7"
+            wilson_sometimes_hunts(
+                self.grid,
+                bias=self.bias,
+                seed=self.seed,
+                imprate=self.imprate
             )
 
-    mark_start_and_exit(grid, start, goal)
+        return self.grid
 
-    if perfect:
-        sigma_male_random_maze_generator(grid, bias=bias, seed=seed, pattern=pattern)
 
-    if not perfect:
-        wilson_sometimes_hunts(grid, bias=bias, seed=seed, pattern=pattern, imprate = imprate)
+def generate_maze(config: dict) -> list[list[Cell]]:
+    generator = MazeGenerator(config)
+    return generator.generate()
 
-    return grid
+
+# def generate_maze(config: dict) -> list[list[int]]:
+#     """
+#     Generate a maze base on configuration dictionary.
+
+#     Args:
+#         config: Dict with mandatory keys WIDTH, HEIGHT, ENTRY,
+#             EXIT, PERFECT
+#         optional: SEED, BIAS, PATTERN, RENDER
+    
+#         Returns: 2D list of Cell objects representing the maze
+#     """
+#     width = config['WIDTH']
+#     height = config['HEIGHT']
+#     start = config['ENTRY']
+#     goal = config['EXIT']
+#     perfect = config['PERFECT']
+#     imprate = int(config['IMPRATE'])
+#     seed = config.get('SEED', None)
+#     bias = config.get('BIAS', 0.5)
+#     pattern = config.get('PATTERN', '42')
+
+#     grid = make_grid(width, height)
+
+#     if width >= 9 and height >= 7:
+#         pattern_grid = make_pattern(pattern)
+#         if pattern_grid:
+#             mark_pattern(grid, pattern_grid)
+#         else:
+#             print(f"Warning: Could not create pattern '{pattern}'")
+#     else:
+#         print(
+#             f"Warning: Could not create pattern '{pattern}', "
+#             "width and height not sufficient, minimum = 9x7"
+#             )
+
+#         self.seed = config.get('SEED')
+#         self.bias = config.get('BIAS', 0.5)
+#         self.pattern_value = config.get('PATTERN', '42')
+#         self.render = config.get('RENDER', '2D')
+
+#         if self.seed is not None:
+#             random.seed(self.seed)
+
+#         self.grid = self.make_grid()
+#         self.pattern = make_pattern(self.pattern_value)
+
+#     return grid
