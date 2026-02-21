@@ -1,3 +1,4 @@
+from typing import Any
 import os
 
 
@@ -9,7 +10,7 @@ def parse_config(filename: str) -> dict:
     Optional: SEED, BIAS, PATTERN, RENDER
     Raises ValueError if invalid format or missing required keys
     """
-    config = {}
+    config: dict[str, Any] = {}
     required_keys = {
         'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT', 'OUTPUT_FILE', 'PERFECT'
         }

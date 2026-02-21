@@ -1,4 +1,5 @@
 from generator import Cell
+from typing import Any
 
 
 """
@@ -41,7 +42,7 @@ h(n) = esitmated distance to finish
 # and do y++
 
 
-def manhattan(a, b) -> int:
+def manhattan(a: Cell, b: Cell) -> Any:
     """
     manhattan function returns the distance in int
     from current to goal (absolute distance)
@@ -50,7 +51,11 @@ def manhattan(a, b) -> int:
     return abs(a.x - b.x) + abs(a.y - b.y)
 
 
-def get_neighbors(cell, maze):
+def get_neighbors(cell: Cell, maze: list[list[Cell]]) -> list[Cell]:
+    """
+    Finds all neighbouring Cells to 'cell' inside grid
+    (or maze) and returns them in a list.
+    """
     neighbors = []
     x, y = cell.x, cell.y
 
@@ -144,6 +149,8 @@ def solve_maze(grid: list[list[Cell]]) -> None:
     open_set = []
     closed_set = set()
 
+    if start is None:
+        return None
     start.g = 0
     start.mhd = manhattan(start, goal)
     start.f = start.g + start.mhd
