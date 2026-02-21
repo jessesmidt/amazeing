@@ -1,3 +1,7 @@
+from generator import Cell
+from typing import Any
+
+
 OPPOSITE = {
     'N': 'S',
     'S': 'N',
@@ -6,7 +10,9 @@ OPPOSITE = {
 }
 
 
-def mark_start_and_exit(grid, start, goal) -> None:
+def mark_start_and_exit(
+        grid: list[list[Cell]], start: Cell, goal: Cell
+        ) -> None:
     """
     Connects the config file's start and goal cell
     and marks them.
@@ -21,7 +27,7 @@ def mark_start_and_exit(grid, start, goal) -> None:
     goal_cell.is_goal = True
 
 
-def remove_wall_between(a, b) -> None:
+def remove_wall_between(a: Cell, b: Cell) -> None:
     """
     Removes the wall between two given cells.
     Finds out direction, removes a's wall
@@ -47,7 +53,7 @@ def remove_wall_between(a, b) -> None:
     b.walls[OPPOSITE[direction]] = False
 
 
-def get_unvisited_neighbors(grid, cell) -> list:
+def get_unvisited_neighbors(grid: list[list[Cell]], cell: Cell) -> list:
     """
     Finds neighbours in 4 directions, checks for
     their .visited status. If not visited or part of pattern,
@@ -87,7 +93,7 @@ def get_unvisited_neighbors(grid, cell) -> list:
     return neighbors
 
 
-def get_all_neighbors(grid, cell):
+def get_all_neighbors(grid: list[list[Cell]], cell: Cell) -> list[Cell]:
     """
     Finds neighbours in 4 directions, except for cells
     that are part of a pattern, appends to list.
@@ -126,7 +132,7 @@ def get_all_neighbors(grid, cell):
     return neighbors
 
 
-def wall_exists_between(a, b) -> bool:
+def wall_exists_between(a: Cell, b: Cell) -> Any:
     """
     Checks between cell a and b for wall.
     Returns true if 2 cells have a wall, else

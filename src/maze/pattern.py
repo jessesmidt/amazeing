@@ -1,8 +1,13 @@
 from src.patterns.digit_patterns import DIGITS
 from src.patterns.char_patterns import CHARS
+from src.maze.generator import Cell
 
 
-def make_pattern(pattern_value) -> list:
+def make_pattern(pattern_value: str) -> list[list[int]] | None:
+    """
+    Initializes the pattern chars, creates a list of strings
+    which we can return to the maze generator
+    """
     if pattern_value is None:
         return None
 
@@ -12,25 +17,25 @@ def make_pattern(pattern_value) -> list:
     # if there is only 1 input, add char. Else return None.
     if len(s) == 1:
         s = "0" + s
-    if len(s) != 2:
+    if len(s) != 2:  # add a gap column [0]
         return None
 
     # first char is left, second char is right
-    left = s[0]
-    right = s[1]
+    left_char = s[0]
+    right_char = s[1]
 
     # check if they're in digits, chars or neither
-    if left in DIGITS:
-        left = DIGITS[left]
-    elif left in CHARS:
-        left = CHARS[left]
+    if left_char in DIGITS:
+        left_pattern = DIGITS[left_char]
+    elif left_char in CHARS:
+        left_pattern = CHARS[left_char]
     else:
         return None
 
-    if right in DIGITS:
-        right = DIGITS[right]
-    elif right in CHARS:
-        right = CHARS[right]
+    if right_char in DIGITS:
+        right_pattern = DIGITS[right_char]
+    elif right_char in CHARS:
+        right_pattern = CHARS[right_char]
     else:
         return None
 
@@ -38,14 +43,15 @@ def make_pattern(pattern_value) -> list:
     # first append the row of left-digit
     # then add a 0, empty
     # then append the row if the right-digit
-    pattern = []
-    for row in range(len(left)):
-        pattern.append(left[row] + [0] + right[row])  # add a gap column [0]
+    pattern: list[list[int]] = []
+
+    for row in range(len(left_pattern)):
+        pattern.append(left_pattern[row] + [0] + right_pattern[row])
 
     return pattern
 
 
-def mark_pattern(grid, pattern) -> None:
+def mark_pattern(grid: list[list[Cell]], pattern: list) -> None:
     # get the height & width of the grid
     # get the height & width of the pattern
     h = len(grid)

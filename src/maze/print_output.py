@@ -1,8 +1,9 @@
 from src.rendering.mlx_renderer import cell_to_tile_index
 from src.maze.generator import Cell
+from typing import TextIO
 
 
-def mark_goal(grid) -> Cell:
+def mark_goal(grid: list[list[Cell]]) -> Cell:
     """
     finds the 'goal' cell in grid, returns cell.
     """
@@ -13,7 +14,7 @@ def mark_goal(grid) -> Cell:
     return goal
 
 
-def print_maze_hex(grid, f) -> None:
+def print_maze_hex(grid: list[list[Cell]], f: TextIO) -> None:
     """
     Outputs the  per cell in hexadecimal value.
     """
@@ -26,7 +27,7 @@ def print_maze_hex(grid, f) -> None:
         f.write("\n")
 
 
-def print_doors(config, f) -> None:
+def print_doors(config: dict, f: TextIO) -> None:
     """
     Finds entrance and exit and prints coordinates
     """
@@ -35,13 +36,13 @@ def print_doors(config, f) -> None:
     f.write(f"\n{entry_x},{entry_y}\n{exit_x},{exit_y}")
 
 
-def print_path(grid, f) -> None:
+def print_path(grid: list[list[Cell]], f: TextIO) -> None:
     """
     Tracks from goal (current) to start what direction
     the path has made.
     """
     current = mark_goal(grid)
-    directions = []
+    directions: list[str] = []
 
     while current.parent:
         parent = current.parent
@@ -60,7 +61,7 @@ def print_path(grid, f) -> None:
     f.write(f"\n{''.join(directions)}")
 
 
-def print_output_main(grid, config) -> None:
+def print_output_main(grid: list[list[Cell]], config: dict) -> None:
     """
     Opens or creates output_maze.txt,
     calls the print path function.

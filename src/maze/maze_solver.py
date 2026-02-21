@@ -1,3 +1,5 @@
+from generator import Cell
+
 
 """
 HEURISTIC SEARCH
@@ -64,7 +66,7 @@ def get_neighbors(cell, maze):
     return neighbors
 
 
-def reconstruct_path(goal) -> None:
+def reconstruct_path(goal: Cell) -> None:
     """
     Goes over the path, starting at goal.
     Finding parent until they reach start.
@@ -109,7 +111,7 @@ def reconstruct_path(goal) -> None:
 #   add it to the ones that we have already explored type xi#
 
 
-def solve_maze(grid) -> None:
+def solve_maze(grid: list[list[Cell]]) -> None:
     """
     Uses A* pathfinding to solve the maze.
 

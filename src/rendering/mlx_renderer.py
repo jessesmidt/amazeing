@@ -1,11 +1,15 @@
 from mlx import Mlx
+from typing import Any
+from src.maze.generator import Cell
 
 
 class MLXDisplay():
     TILE_SIZE = 32
     BUTTON_BAR_HEIGHT = 50
 
-    def __init__(self, grid, width, height, config):
+    def __init__(
+        self, grid: list[list[Cell]], width: int, height: int, config: dict
+            ):
         self.grid = grid
         self.width = width
         self.height = height
@@ -35,25 +39,29 @@ class MLXDisplay():
         # Hook for mouse click
         self.mlx.mlx_mouse_hook(self.win_ptr, self.mouse_handler, None)
 
-    def key_handler(self, keycode, param):
+    def key_handler(self, keycode: int, param: None) -> int:
         """Handle ESC key"""
         if keycode == 65307:
             self.close_window(None)
         return 0
 
-    def mouse_handler(self, button, x, y, param):
+    def mouse_handler(
+            self, button: int, x: int, y: int, param: None
+                ) -> int:
         """Handle mouse button clicks"""
         if button == 1:
             self.handle_click(x, y)
         return 0
 
-    def close_window(self, param):
+    def close_window(self, param: None) -> None:
         """Properly close the window and exit"""
         self.running = False
 
-    def load_tiles(self):
-        """Load all tile png's"""
-        tiles = {}
+    def load_tiles(self) -> dict[str | int, Any]:
+        """
+        Load all tile png's, returns list of pointers to images
+        """
+        tiles: dict[str | int, Any] = {}
         for i in range(16):
             filename = f"assets/tile_{i:x}.png"
             img_ptr, w, h = (
@@ -101,7 +109,7 @@ class MLXDisplay():
         )
         return tiles
 
-    def render(self):
+    def render(self) -> None:
         """Render the display"""
         self.render_maze()
         if self.show_solution:
@@ -111,7 +119,7 @@ class MLXDisplay():
 
         self.mlx.mlx_sync(self.mlx_ptr, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
 
-    def render_maze(self):
+    def render_maze(self) -> None:
         for y in range(self.height):
             for x in range(self.width):
                 cell = self.grid[y][x]
@@ -125,7 +133,7 @@ class MLXDisplay():
                     self.tiles[tile_index], px, py
                     )
 
-    def render_path(self):
+    def render_path(self) -> None:
         """render solution path using overlay images"""
         if not self.show_solution:
             return
@@ -158,7 +166,7 @@ class MLXDisplay():
                         self.tiles['goal'], px, py
                     )
 
-    def render_doors(self):
+    def render_doors(self) -> None:
         """Draw entrance and exit doors using images"""
         for y in range(self.height):
             for x in range(self.width):
@@ -179,20 +187,18 @@ class MLXDisplay():
                         self.tiles['goal'], px, py
                     )
 
-    def draw_buttons(self):
+    def draw_buttons(self) -> None:
         """Draw button bar using images"""
         self.mlx.mlx_put_image_to_window(
             self.mlx_ptr, self.win_ptr,
             self.tiles['btn_bar'], 0, 0
         )
 
-        # Draw generate button at (10, 10)
         self.mlx.mlx_put_image_to_window(
             self.mlx_ptr, self.win_ptr,
             self.tiles['btn_generate'], 10, 10
         )
 
-        # Draw solve/hide button at (170, 10)
         solve_img = (
             self.tiles['btn_hide'] if self.show_solution
             else self.tiles['btn_solve']
@@ -202,7 +208,7 @@ class MLXDisplay():
             solve_img, 170, 10
         )
 
-    def handle_click(self, x, y):
+    def handle_click(self, x: int, y: int) -> None:
         """Handle mouse clicks on buttons"""
         # Check if click is in button bar area
         if y > self.BUTTON_BAR_HEIGHT:
@@ -219,7 +225,7 @@ class MLXDisplay():
             print("Solve button clicked!")
             self.toggle_solution()
 
-    def regenerate_maze(self, config):
+    def regenerate_maze(self, config: dict) -> None:
         """Regenerate the maze and redraw"""
         from src.maze.generator import generate_maze
         from src.maze.print_output import print_output_main
@@ -232,7 +238,7 @@ class MLXDisplay():
         self.mlx.mlx_sync(self.mlx_ptr, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
         self.render()
 
-    def toggle_solution(self):
+    def toggle_solution(self) -> None:
         """Toggle showing/hiding the solution path"""
         self.show_solution = not self.show_solution
         self.mlx.mlx_clear_window(self.mlx_ptr, self.win_ptr)
@@ -240,7 +246,7 @@ class MLXDisplay():
         self.render()
 
 
-def cell_to_tile_index(cell) -> int:
+def cell_to_tile_index(cell: Cell) -> int:
     """
     Convert a Cell's wall configuration to a tile index (0-15).
 
@@ -252,23 +258,23 @@ def cell_to_tile_index(cell) -> int:
     """
     value = 0
     if cell.walls['N']:
-        value |= 1  # N = 1
+        value |= 1
     if cell.walls['E']:
-        value |= 2  # S = 2
+        value |= 2
     if cell.walls['S']:
-        value |= 4  # E = 4
+        value |= 4
     if cell.walls['W']:
-        value |= 8  # W = 8
+        value |= 8
     return value
 
 
-def print_maze_mlx(grid, config):
+def print_maze_mlx(grid: list[list[Cell]], config: dict) -> None:
     from src.maze.print_output import print_output_main
     print_output_main(grid, config)
     display = MLXDisplay(grid, config['WIDTH'], config['HEIGHT'], config)
     display.render()
 
-    def check_running(param):
+    def check_running(param: None) -> int:
         if not display.running:
             display.mlx.mlx_loop_exit(display.mlx_ptr)
             print("Esc key pressed - closing MLX")

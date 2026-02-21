@@ -1,5 +1,6 @@
 import os
 import time
+from typing import Any
 from src.maze.generator import Cell
 
 
@@ -16,7 +17,7 @@ PATH_BLOCK = "\033[44m  \033[0m"
 
 class TerminalDisplay:
     def __init__(
-            self, grid: list[list[Cell]], config: dict[str, any]
+            self, grid: list[list[Cell]], config: dict[str, Any]
             ) -> None:
         """
         Initialize the terminal display with maze and config.
@@ -206,7 +207,7 @@ class TerminalDisplay:
             time.sleep(1)
         return True
 
-    def regenerate_maze(self):
+    def regenerate_maze(self) -> None:
         """Regenerate the maze and redraw"""
         from src.maze.generator import generate_maze
         from src.maze.print_output import print_output_main

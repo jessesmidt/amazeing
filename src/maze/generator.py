@@ -1,4 +1,5 @@
 import random
+from typing import Any
 from .pattern import make_pattern, mark_pattern
 from .generator_utils import (
     get_all_neighbors,
@@ -10,7 +11,7 @@ from .generator_utils import (
 
 
 class Cell:
-    def __init__(self, x, y) -> None:
+    def __init__(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
 
@@ -41,7 +42,9 @@ class Cell:
         self.pattern = False
 
 
-def sigma_male_random_maze_generator(grid, bias, seed) -> None:
+def sigma_male_random_maze_generator(
+        grid: list[list[Cell]], bias: float, seed: Any | None
+        ) -> None:
     """
     Shi leipe functie
     """
@@ -77,7 +80,9 @@ def sigma_male_random_maze_generator(grid, bias, seed) -> None:
             active.remove(cell)
 
 
-def wilson_sometimes_hunts(grid, bias, seed, imprate) -> None:
+def wilson_sometimes_hunts(
+        grid: list[list[Cell]], bias: float, seed: int | None, imprate: int
+            ) -> None:
     """
     Imperfections
     Insane functie waar Sem de docstring voor gaat schrijven
