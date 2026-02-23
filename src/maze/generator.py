@@ -1,13 +1,5 @@
 import random
 from typing import Any
-from .pattern import make_pattern, mark_pattern
-from .generator_utils import (
-    get_all_neighbors,
-    mark_start_and_exit,
-    get_unvisited_neighbors,
-    remove_wall_between,
-    wall_exists_between
-)
 
 
 class Cell:
@@ -48,6 +40,10 @@ def sigma_male_random_maze_generator(
     """
     Shi leipe functie
     """
+    from .generator_utils import (
+        get_unvisited_neighbors,
+        remove_wall_between,
+    )
     if seed is not None:
         random.seed(seed)
 
@@ -87,7 +83,11 @@ def wilson_sometimes_hunts(
     Imperfections
     Insane functie waar Sem de docstring voor gaat schrijven
     """
-
+    from .generator_utils import (
+        get_all_neighbors,
+        remove_wall_between,
+        wall_exists_between
+    )
     if seed is not None:
         random.seed(seed)
 
@@ -206,14 +206,13 @@ def wilson_sometimes_hunts(
 
 
 class MazeGenerator:
-
     def __init__(self, config: dict) -> None:
         """
         Initializes grid and required config inputs.
         Uses get() to set values to optional keys.
         Calls make_pattern to mark pattern on 2d grid.
         """
-
+        from .pattern import make_pattern
         self.width = config['WIDTH']
         self.height = config['HEIGHT']
         self.start = config['ENTRY']
@@ -249,7 +248,11 @@ class MazeGenerator:
         return grid
 
     def generate(self) -> list[list[Cell]]:
+        """
 
+        """
+        from .generator_utils import mark_start_and_exit
+        from .pattern import mark_pattern
         mark_start_and_exit(self.grid, self.start, self.goal)
 
         if self.pattern:
@@ -275,52 +278,3 @@ class MazeGenerator:
 def generate_maze(config: dict) -> list[list[Cell]]:
     generator = MazeGenerator(config)
     return generator.generate()
-
-
-# def generate_maze(config: dict) -> list[list[int]]:
-#     """
-#     Generate a maze base on configuration dictionary.
-
-#     Args:
-#         config: Dict with mandatory keys WIDTH, HEIGHT, ENTRY,
-#             EXIT, PERFECT
-#         optional: SEED, BIAS, PATTERN, RENDER
-
-#         Returns: 2D list of Cell objects representing the maze
-#     """
-#     width = config['WIDTH']
-#     height = config['HEIGHT']
-#     start = config['ENTRY']
-#     goal = config['EXIT']
-#     perfect = config['PERFECT']
-#     imprate = int(config['IMPRATE'])
-#     seed = config.get('SEED', None)
-#     bias = config.get('BIAS', 0.5)
-#     pattern = config.get('PATTERN', '42')
-
-#     grid = make_grid(width, height)
-
-#     if width >= 9 and height >= 7:
-#         pattern_grid = make_pattern(pattern)
-#         if pattern_grid:
-#             mark_pattern(grid, pattern_grid)
-#         else:
-#             print(f"Warning: Could not create pattern '{pattern}'")
-#     else:
-#         print(
-#             f"Warning: Could not create pattern '{pattern}', "
-#             "width and height not sufficient, minimum = 9x7"
-#             )
-
-#         self.seed = config.get('SEED')
-#         self.bias = config.get('BIAS', 0.5)
-#         self.pattern_value = config.get('PATTERN', '42')
-#         self.render = config.get('RENDER', '2D')
-
-#         if self.seed is not None:
-#             random.seed(self.seed)
-
-#         self.grid = self.make_grid()
-#         self.pattern = make_pattern(self.pattern_value)
-
-#     return grid

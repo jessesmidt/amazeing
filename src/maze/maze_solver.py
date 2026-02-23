@@ -1,4 +1,4 @@
-from generator import Cell
+from .generator import Cell
 from typing import Any
 
 

@@ -46,6 +46,7 @@ clean:
 	find . -type f -name "*.pyd" -delete 2>/dev/null || true
 	find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".eggs" -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "maze.txt" -delete 2>/dev/null || true
 	@echo "Cleanup complete!"
 
 # Run linting with flake8 and mypy (mandatory flags)

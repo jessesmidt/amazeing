@@ -1,6 +1,6 @@
 from src.patterns.digit_patterns import DIGITS
 from src.patterns.char_patterns import CHARS
-from src.maze.generator import Cell
+from .generator import Cell
 
 
 def make_pattern(pattern_value: str) -> list[list[int]] | None:
