@@ -21,7 +21,6 @@ def main() -> None:
     except ValueError as e:
         print(f"Error: {e}")
         return
-    # print(f"Config loaded successfully!\n{config}")
 
     try:
         grid = generate_maze(config)
@@ -29,14 +28,18 @@ def main() -> None:
         print(f"Error: {e}")
         return
 
-    solve_maze(grid)
+    try:
+        solve_maze(grid)
 
-    if config['RENDER'] == 'MLX':
-        print_maze_mlx(grid, config)
-    else:
-        print_output_main(grid, config)
-        display = TerminalDisplay(grid, config)
-        display.render()
+        if config['RENDER'] == 'MLX':
+            print_maze_mlx(grid, config)
+        else:
+            print_output_main(grid, config)
+            display = TerminalDisplay(grid, config)
+            display.render()
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ The maze generation logic is packaged as a standalone reusable Python library (`
 ### Requirements
 
 - Python 3.10 or later
-- MiniLibX (included, for graphical display)
+- MiniLibX (42's MLX-2.2py3.whl, for graphical display)
 
 ### Installation
 
@@ -83,7 +83,7 @@ A default `config.txt` is provided at the root of the repository.
 
 ### Growing Tree (covers DFS and Prim's)
 
-The `sigma_male_random_maze_generator` function implements the **Growing Tree** algorithm, controlled by a `bias` parameter:
+The `growing_sigma_tree` function implements the **Growing Tree** algorithm, controlled by a `bias` parameter:
 
 - `bias = 1.0` → always picks the most recently added cell → behaves as **Recursive Backtracker (DFS)**, producing long winding corridors
 - `bias = 0.0` → always picks a random cell → behaves as **Prim's algorithm**, producing mazes with many short dead ends
@@ -203,11 +203,12 @@ We started by agreeing on the `Cell` data structure and the config format so bot
 
 ### What worked well
 
-Splitting generation and display cleanly between team members meant we rarely blocked each other. Using a bias parameter to cover both DFS and Prim's in one function kept the codebase lean.
+Splitting generation, parsing and display cleanly between team members meant we rarely blocked each other. Using a bias parameter to cover both DFS and Prim's in one function kept the codebase lean.
 
 ### What could be improved
 
-We underestimated the time needed for flake8/mypy compliance, especially with type hints across the whole codebase. Starting lint early would have saved time at the end.
+We underestimated the time needed for flake8/mypy compliance, especially with type hints across the whole codebase. Starting lint early would have saved time at the end. Same goes for choosing algorithm. It took us a long time to figure out that we also had to generate imperfect mazes.
+At first we were only generating perfect mazes. It would've saved us time to research this beforehand.
 
 ### Tools used
 
@@ -230,11 +231,11 @@ We underestimated the time needed for flake8/mypy compliance, especially with ty
 
 ### AI usage
 
-AI (Claude) was used for the following tasks:
+AI (Claude & ChatGPT) werte used for the following tasks:
 - Explaining the differences between maze generation algorithms and helping choose between them
 - Debugging the circular import issue between `generator.py` and `pattern.py`
 - Guiding the Python packaging process (`pyproject.toml` setup, `python -m build`, `.whl` structure)
 - Reviewing type hint syntax for `mypy` compliance
-- Drafting this README
+- Drafting this README & Docstrings for functions
 
 All AI-generated content was reviewed, tested, and validated by both team members before inclusion in the project.

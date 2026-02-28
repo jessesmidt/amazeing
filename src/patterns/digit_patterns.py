@@ -1,4 +1,6 @@
-DIGITS = {
+Pattern = list[list[int]]
+
+DIGITS: dict[str, Pattern] = {
     "0": [
         [1, 1, 1],
         [1, 2, 1],

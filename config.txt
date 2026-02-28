@@ -1,24 +1,21 @@
 
 ### [REQUIRED] Total width of maze
-WIDTH=4
+WIDTH=20
 
 ### [REQUIRED] Total height of maze
-HEIGHT=4
+HEIGHT=20
 
 ### [REQUIRED] Entry point for maze (between 0,0 and height-1, width-1)
-ENTRY=3,3
+ENTRY=19,19
 
 ### [REQUIRED] Exit point for maze (between 0,0 and height-1, width-1)
-EXIT=3,0
+EXIT=0,0
 
 ### [REQUIRED] Name for ouput file of maze in hexadecimal digits
 OUTPUT_FILE=maze.txt
 
 ### [REQUIRED] True / False for perfect maze (only a single possible path)
 PERFECT=False
-
-### [REQUIRED] Rendering options are MLX (Default, Using MiniLibX), ASCII (terminal output)
-RENDER=ASCII
 
 #----------------------------------------#
 #                                        #
@@ -27,7 +24,7 @@ RENDER=ASCII
 #----------------------------------------#
 
 ### [*OPTIONAL] 1 - 100 rate of imperfections (when PERFECT = False)
-IMPRATE = 50
+IMPRATE = 60
 
 ### [OPTIONAL] Pattern will be the number / combination of 2 characters in the middle of the maze
 PATTERN=42

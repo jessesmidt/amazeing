@@ -11,27 +11,36 @@ OPPOSITE = {
 
 
 def mark_start_and_exit(
-        grid: list[list[Cell]], start: Cell, goal: Cell
+        grid: list[list[Cell]], start: tuple[int, int], goal: tuple[int, int]
         ) -> None:
     """
-    Connects the config file's start and goal cell
-    and marks them.
+    Mark the start and goal cells in the grid.
+
+    Args:
+        grid: 2D list of Cell objects representing the maze.
+        start: (x, y) coordinates of the entry cell.
+        goal: (x, y) coordinates of the exit cell.
     """
     sx, sy = start
     gx, gy = goal
 
-    start_cell = grid[sy][sx]
-    goal_cell = grid[gy][gx]
-
-    start_cell.is_start = True
-    goal_cell.is_goal = True
+    grid[sy][sx].is_start = True
+    grid[gy][gx].is_goal = True
 
 
 def remove_wall_between(a: Cell, b: Cell) -> None:
     """
-    Removes the wall between two given cells.
-    Finds out direction, removes a's wall
-    and uses opposite to remove for b.
+    Remove the shared wall between two adjacent cells.
+
+    Determines the direction from a to b, then opens the wall
+    on both sides using the opposite direction mapping.
+
+    Args:
+        a: The source cell.
+        b: The destination cell, must be directly adjacent to a.
+
+    Raises:
+        ValueError: If a and b are not adjacent (not exactly one step apart).
     """
     dx = b.x - a.x
     dy = b.y - a.y
@@ -59,6 +68,13 @@ def get_unvisited_neighbors(grid: list[list[Cell]], cell: Cell) -> list:
     their .visited status. If not visited or part of pattern,
     appends to list. A list of all usable neighbours
     is returned.
+
+    args:
+        grid: 2D list of Cell objects representing the maze.
+        cell: the target Cell which neighbours we're finding.
+
+    returns:
+        neighbors: a list of Cells which sorround the target Cell
     """
     neighbors = []
     h = len(grid)

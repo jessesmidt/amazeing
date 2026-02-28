@@ -71,7 +71,7 @@ def get_neighbors(cell: Cell, maze: list[list[Cell]]) -> list[Cell]:
     return neighbors
 
 
-def reconstruct_path(goal: Cell) -> None:
+def reconstruct_path(goal: Cell | None) -> None:
     """
     Goes over the path, starting at goal.
     Finding parent until they reach start.
@@ -82,38 +82,6 @@ def reconstruct_path(goal: Cell) -> None:
     while current:
         current.in_path = True
         current = current.parent
-
-# define the function solve_maze
-# needs this info:
-#   start = starting cell (with the cords etc)
-#   goal = the goal cell (with the cords etc)
-#   maze = 2d maze structure yk
-
-# Make 2 sets
-#   open_set = all cells we might still visit
-#   closed_set = all cells we already checked type xi
-
-# Initialize Start Cell
-#   g = distance from start to current
-#   mhd = manhattan distance to goal
-#   f = mhd + g
-
-# Add the start to the open set yk
-# while open_set
-#   keep looking untill there aint nothing to explore yk
-
-# currrent = min..etc.
-#   look through open_set
-#   idk wtf is happening here ngl
-
-# if current == goal
-#   check if the goal is reached type xi
-#   cuz then we gotta go back and reconstruct
-#   the path using the parent-chain-shit
-
-# open_set.remove(current) & closed_set.add(current)
-#   remove it from the ones we havent explored yet
-#   add it to the ones that we have already explored type xi#
 
 
 def solve_maze(grid: list[list[Cell]]) -> None:
@@ -128,8 +96,8 @@ def solve_maze(grid: list[list[Cell]]) -> None:
     Args:
         grid: A 2D list of Cell objects representing the maze structure.
     """
-    start = None
-    goal = None
+    start: Cell | None = None
+    goal: Cell | None = None
 
     for row in grid:
         for cell in row:
@@ -137,6 +105,9 @@ def solve_maze(grid: list[list[Cell]]) -> None:
                 start = cell
             if cell.is_goal:
                 goal = cell
+
+    if start is None or goal is None:
+        return
 
     # Reset any previous path
     for row in grid:

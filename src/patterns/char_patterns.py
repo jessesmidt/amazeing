@@ -1,4 +1,6 @@
-CHARS = {
+Pattern = list[list[int]]
+
+CHARS: dict[str, Pattern] = {
     "a": [
         [1, 1, 1],
         [1, 2, 1],

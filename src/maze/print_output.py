@@ -5,18 +5,29 @@ from typing import TextIO
 
 def mark_goal(grid: list[list[Cell]]) -> Cell:
     """
-    finds the 'goal' cell in grid, returns cell.
+    finds the 'goal' cell in grid using their is_goal attribute.
+
+    args:
+        grid: A 2D list of Cell objects representing the maze structure.
+
+    return:
+        goal: the only Cell marked with is_goal.
     """
     for row in grid:
         for cell in row:
             if cell.is_goal:
-                goal = cell
-    return goal
+                return cell
+
+    raise ValueError("No goals cell found in grid")
 
 
 def print_maze_hex(grid: list[list[Cell]], f: TextIO) -> None:
     """
-    Outputs the  per cell in hexadecimal value.
+    Outputs the per cell in hexadecimal value.
+
+    args:
+        grid: A 2D list of Cell objects representing the maze structure.
+        f: File descriptor for text output
     """
     h = len(grid)
     w = len(grid[0])
@@ -30,6 +41,10 @@ def print_maze_hex(grid: list[list[Cell]], f: TextIO) -> None:
 def print_doors(config: dict, f: TextIO) -> None:
     """
     Finds entrance and exit and prints coordinates
+
+    args:
+        config: Parsed configuration.txt stored in a dict.
+        f: File descriptor for text output
     """
     entry_x, entry_y = config['ENTRY']
     exit_x, exit_y = config['EXIT']
@@ -40,6 +55,10 @@ def print_path(grid: list[list[Cell]], f: TextIO) -> None:
     """
     Tracks from goal (current) to start what direction
     the path has made.
+
+    args:
+        grid: A 2D list of Cell objects representing the maze structure.
+        f: File descriptor for text output
     """
     current = mark_goal(grid)
     directions: list[str] = []
@@ -65,9 +84,12 @@ def print_output_main(grid: list[list[Cell]], config: dict) -> None:
     """
     Opens or creates output_maze.txt,
     calls the print path function.
+
+    args:
+        grid: A 2D list of Cell objects representing the maze structure.
+        config: Parsed configuration.txt stored in a dict.
     """
-    # print(f"Printing output to {config['OUTPUT_FILE']}")
-    f = open(f"{config['OUTPUT_FILE']}", "w")
-    print_maze_hex(grid, f)
-    print_doors(config, f)
-    print_path(grid, f)
+    with open(config['OUTPUT_FILE'], "w") as f:
+        print_maze_hex(grid, f)
+        print_doors(config, f)
+        print_path(grid, f)
