@@ -12,7 +12,6 @@ PATTERN_EMPTY = "░░"
 
 START_BLOCK = "\033[42m  \033[0m"
 GOAL_BLOCK = "\033[41m  \033[0m"
-PATH_BLOCK = "\033[44m  \033[0m"
 
 
 class TerminalDisplay:
