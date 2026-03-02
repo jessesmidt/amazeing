@@ -62,7 +62,8 @@ def remove_wall_between(a: Cell, b: Cell) -> None:
     b.walls[OPPOSITE[direction]] = False
 
 
-def get_unvisited_neighbors(grid: list[list[Cell]], cell: Cell) -> list:
+def get_unvisited_neighbors(
+        grid: list[list[Cell]], cell: Cell) -> list[Cell]:
     """
     Finds neighbours in 4 directions, checks for
     their .visited status. If not visited or part of pattern,

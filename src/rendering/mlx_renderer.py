@@ -1,4 +1,4 @@
-from mlx import Mlx
+from mlx import Mlx  # type: ignore[import-untyped]
 from typing import Any
 from src.maze.generator import Cell
 
@@ -18,7 +18,8 @@ class MLXDisplay:
     BUTTON_BAR_HEIGHT = 50
 
     def __init__(
-        self, grid: list[list[Cell]], width: int, height: int, config: dict
+        self, grid: list[list[Cell]], width: int,
+        height: int, config: dict[str, Any]
             ):
         """
         Initialize the MLX window and load all tile assets.
@@ -309,7 +310,7 @@ class MLXDisplay:
         elif 170 <= x <= 310 and btn_y <= y <= btn_y + btn_height:
             self.toggle_solution()
 
-    def regenerate_maze(self, config: dict) -> None:
+    def regenerate_maze(self, config: dict[str, Any]) -> None:
         """
         Generate a new maze, solve it, write the output file, and redraw.
 
@@ -364,7 +365,7 @@ def cell_to_tile_index(cell: Cell) -> int:
     return value
 
 
-def print_maze_mlx(grid: list[list[Cell]], config: dict) -> None:
+def print_maze_mlx(grid: list[list[Cell]], config: dict[str, Any]) -> None:
     """
     Write the maze output file and launch the MLX graphical display.
 

@@ -1,6 +1,8 @@
 from src.patterns.digit_patterns import DIGITS
 from src.patterns.char_patterns import CHARS
 from .generator import Cell
+import sys
+import time
 
 
 def make_pattern(pattern_value: str) -> list[list[int]] | None:
@@ -71,10 +73,8 @@ def mark_pattern(grid: list[list[Cell]], pattern: list[list[int]]) -> None:
     pw = len(pattern[0])
 
     if (h + 1) < ph or (w + 1) < pw:
-        input(
-            "Warning: Maze too small for '42' pattern (min 9x7)."
-            "\nPress Enter to continue..."
-        )
+        print("Warning: Maze too small for '42' pattern", file=sys.stderr)
+        time.sleep(3)
         return
 
     start_x = (w - pw) // 2

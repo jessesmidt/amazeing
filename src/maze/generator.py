@@ -1,4 +1,5 @@
 import random
+from typing import Any
 
 
 class Cell:
@@ -278,7 +279,7 @@ def _maybe_add_imperfection(
 
 
 class MazeGenerator:
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """
         Initializes grid and required config inputs.
         Uses get() to set values to optional keys.
@@ -347,6 +348,6 @@ class MazeGenerator:
         return self.grid
 
 
-def generate_maze(config: dict) -> list[list[Cell]]:
+def generate_maze(config: dict[str, Any]) -> list[list[Cell]]:
     generator = MazeGenerator(config)
     return generator.generate()

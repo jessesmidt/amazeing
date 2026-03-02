@@ -1,6 +1,6 @@
 from src.rendering.mlx_renderer import cell_to_tile_index
 from src.maze.generator import Cell
-from typing import TextIO
+from typing import TextIO, Any
 
 
 def mark_goal(grid: list[list[Cell]]) -> Cell:
@@ -38,7 +38,7 @@ def print_maze_hex(grid: list[list[Cell]], f: TextIO) -> None:
         f.write("\n")
 
 
-def print_doors(config: dict, f: TextIO) -> None:
+def print_doors(config: dict[str, Any], f: TextIO) -> None:
     """
     Finds entrance and exit and prints coordinates
 
@@ -80,7 +80,7 @@ def print_path(grid: list[list[Cell]], f: TextIO) -> None:
     f.write(f"\n{''.join(directions)}")
 
 
-def print_output_main(grid: list[list[Cell]], config: dict) -> None:
+def print_output_main(grid: list[list[Cell]], config: dict[str, Any]) -> None:
     """
     Opens or creates output_maze.txt,
     calls the print path function.

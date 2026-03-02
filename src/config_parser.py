@@ -2,7 +2,7 @@ from typing import Any
 import os
 
 
-def parse_config(filename: str) -> dict:
+def parse_config(filename: str) -> dict[str, Any]:
     """
     Parse maze config file.
     Returns dict with keys:

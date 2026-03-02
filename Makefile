@@ -59,9 +59,9 @@ lint:
 # Run strict linting (optional, enhanced checking)
 lint-strict:
 	@echo "Running flake8..."
-	python3 -m flake8
+	$(PYTHON) -m flake8
 	@echo "Running mypy with strict mode..."
-	mypy . --strict
+	$(PYTHON) -m mypy . --strict
 
 # Display help information
 help:
