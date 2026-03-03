@@ -72,7 +72,7 @@ def mark_pattern(grid: list[list[Cell]], pattern: list[list[int]]) -> None:
     ph = len(pattern)
     pw = len(pattern[0])
 
-    if (h + 1) < ph or (w + 1) < pw:
+    if (h-1) <= ph or (w-1) <= pw:
         print("Warning: Maze too small for '42' pattern", file=sys.stderr)
         time.sleep(3)
         return

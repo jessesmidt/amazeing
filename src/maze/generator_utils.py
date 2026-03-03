@@ -1,5 +1,6 @@
 from .generator import Cell
 from typing import Any
+import random
 
 
 OPPOSITE = {
@@ -115,6 +116,10 @@ def get_all_neighbors(grid: list[list[Cell]], cell: Cell) -> list[Cell]:
     Finds neighbours in 4 directions, except for cells
     that are part of a pattern, appends to list.
     A list of all available neighbours is returned.
+
+    args:
+        grid: 2D list of Cell objects representing the maze.
+        cell: the target Cell which neighbours we're finding.
     """
     neighbors = []
     h = len(grid)
@@ -168,3 +173,87 @@ def wall_exists_between(a: Cell, b: Cell) -> Any:
         return a.walls['N']
 
     return False
+
+
+def fix_large_holes(grid: list[list[Cell]]) -> None:
+    """
+    Detects fully open 3x3 regions in the maze and closes one random internal
+    wall within them. Repeats until no such regions remain.
+
+    A 3x3 region is considered fully open if every adjacent cell pair within it
+    shares an open passage (no walls between them) and no cell
+    carries a pattern. Closing a random internal wall breaks the
+    open region while preserving overall maze connectivity.
+
+    Args:
+        grid: 2D list of Cell objects representing the maze.
+    """
+    height = len(grid)
+    width = len(grid[0])
+    changed = True
+
+    while changed:
+        changed = False
+
+        for start_y in range(height - 2):
+            for start_x in range(width - 2):
+
+                fully_open = True
+
+                for dy in range(3):
+                    for dx in range(3):
+                        cell = grid[start_y + dy][start_x + dx]
+
+                        if cell.pattern:
+                            fully_open = False
+                            break
+
+                        if dx < 2:
+                            right = grid[start_y + dy][start_x + dx + 1]
+                            if cell.walls['E'] or right.walls['W']:
+                                fully_open = False
+                                break
+
+                        if dy < 2:
+                            bottom = grid[start_y + dy + 1][start_x + dx]
+                            if cell.walls['S'] or bottom.walls['N']:
+                                fully_open = False
+                                break
+
+                    if not fully_open:
+                        break
+
+                if not fully_open:
+                    continue
+
+                edges = []
+
+                for dy in range(3):
+                    for dx in range(3):
+                        x = start_x + dx
+                        y = start_y + dy
+                        cell = grid[y][x]
+
+                        if dx < 2:
+                            right = grid[y][x + 1]
+                            if not cell.walls['E']:
+                                edges.append((cell, right, 'E'))
+
+                        if dy < 2:
+                            bottom = grid[y + 1][x]
+                            if not cell.walls['S']:
+                                edges.append((cell, bottom, 'S'))
+
+                if not edges:
+                    continue
+
+                cell, neighbor, direction = random.choice(edges)
+
+                if direction == 'E':
+                    cell.walls['E'] = True
+                    neighbor.walls['W'] = True
+                else:
+                    cell.walls['S'] = True
+                    neighbor.walls['N'] = True
+
+                changed = True

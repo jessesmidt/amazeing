@@ -1,5 +1,5 @@
-from src.rendering.mlx_renderer import cell_to_tile_index
-from src.maze.generator import Cell
+from src.rendering.render_utils import cell_to_tile_index
+from .generator import Cell
 from typing import TextIO, Any
 
 

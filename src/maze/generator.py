@@ -326,6 +326,7 @@ class MazeGenerator:
         """
         from .generator_utils import mark_start_and_exit
         from .pattern import mark_pattern
+        from .generator_utils import fix_large_holes
         mark_start_and_exit(self.grid, self.start, self.goal)
 
         if self.pattern:
@@ -344,6 +345,7 @@ class MazeGenerator:
                 seed=self.seed,
                 imprate=self.imprate
             )
+            fix_large_holes(self.grid)
 
         return self.grid
 

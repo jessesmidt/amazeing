@@ -57,6 +57,8 @@ make clean
 
 ---
 
+
+
 ## Configuration File Format
 
 The configuration file uses `KEY=VALUE` pairs, one per line. Lines starting with `#` are treated as comments and ignored.
@@ -94,6 +96,88 @@ This means a single function covers two classic algorithms depending on configur
 ### Wilson's + Hunt-and-Kill
 
 The `wilson_sometimes_hunts` function combines **Wilson's algorithm** (loop-erased random walks) with a **Hunt-and-Kill** fallback. The `bias` parameter controls how often each branch is used. An `imprate` (imperfection rate) parameter randomly removes extra walls to create imperfect mazes with multiple paths.
+
+## Generation Algorithms
+
+Two generation strategies are available, selected via `PERFECT` in config.
+
+---
+
+### `PERFECT: true` — Growing Tree (Sigma)
+
+Carves a perfect maze (single solution, no loops) using an active cell list.
+Behavior is controlled by `bias`: `1.0` = recursive backtracker, `0.0` = Prim's.
+```
+Step 1: start        Step 2: carve        Step 3: done
+┌─┬─┬─┬─┐           ┌─┬─┬─┬─┐           ┌─┬─┬─┬─┐
+│ │ │ │ │           │ · · · │           │ ╶─╴ │ │
+├─┼─┼─┼─┤     →     ├─┼─┼─┼─┤     →     ├─╴ ├─┤ │
+│S│ │ │ │           │S· │ · │           │S│ ╶─╴ │
+├─┼─┼─┼─┤           ├─┼─┼─┼─┤           ├─┴─╴ ├─┤
+│ │ │ │ │           │ │ · · │           │ ╶───╴ │
+└─┴─┴─┴─┘           └─┴─┴─┴─┘           └─┴─┴─┴─┘
+ all walls            active (·)          finished
+                      being carved        maze
+```
+
+---
+
+### `PERFECT: false` — Wilson's + Hunt-and-Kill (hybrid)
+
+Each iteration, a random roll against `bias` selects the algorithm for that step.
+Both can inject imperfections via `imprate`, punching extra passages to create loops.
+```
+random() < bias  →  Wilson's (loop-erasing random walk)
+random() >= bias →  Hunt-and-Kill (scan for unvisited cell adj. to maze)
+                         ↓ (both)
+                 _maybe_add_imperfection()
+```
+
+**Wilson's** — random walk with loop erasure, carves when walk hits visited cell:
+```
+ start walk      loop detected     loop erased      path carved
+ ┌─┬─┬─┐         ┌─┬─┬─┐         ┌─┬─┬─┐         ┌─┬─┬─┐
+ │ →→↓ │         │ →→↓ │         │    │ │         │ ╶─╴ │
+ ├─┼─┼─┤    →    ├─┼─┼─┤    →    ├─┼─┼─┤    →    ├─┼─┼─┤
+ │ │ ↓ │         │ ↑←← │         │    │ │         │   ╶─┤
+ ├─┼─┼─┤         ├─┼─┼─┤         ├─┼─┼─┤         ├─┼─┼─┤
+ │ │■│ │         │ │■│ │         │ │■│ │         │ │■│ │
+ └─┴─┴─┘         └─┴─┴─┘         └─┴─┴─┘         └─┴─┴─┘
+                  ■ = visited      walk reset       ■ = visited
+```
+
+**Hunt-and-Kill** — scans for unvisited cell adjacent to existing maze:
+```
+ ┌─┬─┬─┬─┐
+ │■│■│ │ │   scan order: → → → ↓
+ ├─┼─┼─┼─┤                       found: (2,1) has visited neighbor
+ │■│ →?│ │   ──────────────────► connect & mark visited
+ ├─┼─┼─┼─┤
+ │ │ │ │ │
+ └─┴─┴─┴─┘
+  ■ = visited maze so far
+```
+
+**Imperfection injection** — after each carve, rolls against `imprate`:
+```
+  before          after (imprate hit)
+ ┌─┬─┬─┐         ┌─┬─┬─┐
+ │■│■│ │         │■ ■│ │   ← extra wall removed,
+ ├─┼─┼─┤    →    ├─┼─┼─┤     loop created
+ │■│ │ │         │■│ │ │
+ └─┴─┴─┘         └─┴─┴─┘
+```
+
+---
+
+### Config reference
+
+| Parameter | Effect |
+|-----------|--------|
+| `PERFECT` | `true` = Growing Tree only. `false` = hybrid + imperfections |
+| `BIAS` | `0.0–1.0`. Controls cell selection (Growing Tree) or algorithm split (hybrid) |
+| `IMPRATE` | `0–100`. % chance of punching an extra wall per carve step |
+| `SEED` | Optional int for reproducible output |
 
 ### Why these algorithms?
 

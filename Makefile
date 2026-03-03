@@ -34,10 +34,15 @@ debug:
 	@echo "Running A-Maze-ing in debug mode..."
 	$(PYTHON) -m pdb $(MAIN_SCRIPT) $(CONFIG_FILE)
 
+build:
+	@echo "Building wheel and sdist..."
+	python3 -m build
+
 # Clean temporary files and caches
 clean:
 	@echo "Cleaning temporary files and caches..."
 	@if [ -d "venv" ]; then rm -rf venv && echo "Removed venv/"; fi
+	rm -rf dist/ build/ *.egg-info
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true

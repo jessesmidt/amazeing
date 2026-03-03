@@ -1,6 +1,12 @@
-from mlx import Mlx  # type: ignore[import-untyped]
+try:
+    from mlx import Mlx
+except ModuleNotFoundError:
+    raise ModuleNotFoundError(
+        "MLX is not installed. Make sure to include MLX wheel file."
+    )
 from typing import Any
 from src.maze.generator import Cell
+from src.rendering.render_utils import cell_to_tile_index
 
 
 class MLXDisplay:
@@ -341,28 +347,6 @@ class MLXDisplay:
         self.mlx.mlx_clear_window(self.mlx_ptr, self.win_ptr)
         self.mlx.mlx_sync(self.mlx_ptr, self.mlx.SYNC_WIN_FLUSH, self.win_ptr)
         self.render()
-
-
-def cell_to_tile_index(cell: Cell) -> int:
-    """
-    Convert a Cell's wall configuration to a tile index (0-15).
-
-    Args:
-        cell: Cell object with walls dict
-
-    Returns:
-        int: Index from 0-15 representing which tile PNG to use
-    """
-    value = 0
-    if cell.walls['N']:
-        value |= 1
-    if cell.walls['E']:
-        value |= 2
-    if cell.walls['S']:
-        value |= 4
-    if cell.walls['W']:
-        value |= 8
-    return value
 
 
 def print_maze_mlx(grid: list[list[Cell]], config: dict[str, Any]) -> None:

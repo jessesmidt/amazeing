@@ -3,8 +3,6 @@ from src.config_parser import parse_config
 from src.maze.generator import generate_maze
 from src.maze.print_output import print_output_main
 from src.maze.maze_solver import solve_maze
-from src.rendering.terminal_renderer import TerminalDisplay
-from src.rendering.mlx_renderer import print_maze_mlx
 
 
 def main() -> None:
@@ -21,6 +19,9 @@ def main() -> None:
     except ValueError as e:
         print(f"Error: {e}")
         return
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+        return
 
     try:
         grid = generate_maze(config)
@@ -28,18 +29,30 @@ def main() -> None:
         print(f"Error: {e}")
         return
 
+    config['RENDER'] = config.get('RENDER', 'ASCII')
+
     try:
         solve_maze(grid)
-
-        if config['RENDER'] == 'MLX':
-            print_maze_mlx(grid, config)
-        else:
-            print_output_main(grid, config)
-            display = TerminalDisplay(grid, config)
-            display.render()
     except ValueError as e:
         print(f"Error: {e}")
         return
+
+    if config['RENDER'] == 'MLX':
+        try:
+            from src.rendering.mlx_renderer import print_maze_mlx
+            print_maze_mlx(grid, config)
+        except ModuleNotFoundError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        try:
+            from src.rendering.terminal_renderer import TerminalDisplay
+            print_output_main(grid, config)
+            display = TerminalDisplay(grid, config)
+            display.render()
+        except ValueError as e:
+            print(f"Error: {e}")
+            return
 
 
 if __name__ == "__main__":
